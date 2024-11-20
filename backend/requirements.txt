@@ -1,0 +1,19 @@
+# Core Flask
+Flask         # The main Flask framework
+
+# Database and ORM
+Flask-SQLAlchemy
+psycopg2-binary 
+
+# Firebase Integration
+firebase-admin
+
+# Testing
+pytest
+pytest-flask
+
+# Environment Variables
+python-dotenv
+
+# Others
+uuid
