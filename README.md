@@ -23,3 +23,6 @@ The primary objective of this project is to create a platform that enables indiv
 
 ## Vision
 This app is designed to be a quick and intuitive tool for casual interactions, fostering meaningful connections while providing users with the option to share feedback in an indirect but impactful way. By bridging the gap between virtual communication and real-world encounters, it opens up new opportunities for social engagement.
+
+## Roadmap
+The roadmap (readme) for the frontend and the backend can be found the appropriate folder.
