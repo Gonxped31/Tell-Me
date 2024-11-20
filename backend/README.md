@@ -7,7 +7,7 @@
 - [ ] Configure PostgreSQL for the database side.
 - [ ] Configure Flask for the server side.
 
-## Endpoints (Need to be updated)
+## Endpoints (**Need to be updated**)
 - [ ] Authentications endpoints:
     - [ ] `POST /api/register` to create a new user
     - [ ] `POST /api/login` to authenticate the user (return JWT)
