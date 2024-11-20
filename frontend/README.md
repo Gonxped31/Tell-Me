@@ -2,8 +2,8 @@
 ## Infrastructure
 We will use **React native** for the frontend.
 
-
 ## Views
+The prototypes for the views ca be found [Here](https://miro.com/app/board/uXjVLC1uN2Q=/?share_link_id=491941064475).
 - [ ] Principal page views:
     - [ ] Welcome page
     - [ ] Login
