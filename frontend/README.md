@@ -1,4 +1,8 @@
 # Roadmap for the frontend.
+## Infrastructure
+We will use **React native** for the frontend and **Firebase** for the backend. **(Need to be confirmed)**
+
+
 ## Views
 - [ ] Principal page views:
     - [ ] Welcome page
@@ -17,6 +21,3 @@
     - [ ] My profile
     - [ ] My messages
     - [ ] Settings
-
-## Infrastructure
-We will use **React native** for the frontend and **Firebase** for the backend. **(Need to be confirmed)**
