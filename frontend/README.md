@@ -1,6 +1,6 @@
 # Roadmap for the frontend.
 ## Infrastructure
-We will use **React native** for the frontend and **Firebase** for the backend. **(Need to be confirmed)**
+We will use **React native** for the frontend.
 
 
 ## Views
