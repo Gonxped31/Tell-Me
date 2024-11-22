@@ -6,6 +6,11 @@ import PasswordRecovery from "@/components/auth/passwordRecovery";
 import LoadingScreen from "@/components/utils/loadingScreen";
 import ResetPassword from "@/components/auth/resetPassword";
 import MainView from "@/components/main/mainVIew";
+import RateUserScreen from "@/components/main/rateUserScreen";
+import MessagingScreen from "@/components/main/messagingScreen";
+import Settings from "@/components/main/settings";
+import Conversations from "@/components/main/messagesList";
+import Profile from "@/components/main/profile";
 
 //TODO: Add navigation
 export default function Index() {
@@ -17,7 +22,12 @@ export default function Index() {
       {/* <PasswordRecovery /> */}
       {/* <LoadingScreen message="Verifying the code..." /> */}
       {/* <ResetPassword /> */}
-      <MainView />
+      {/* <MainView /> */}
+      {/* <RateUserScreen infos={{name: "John Doe", distance: 2}} /> */}
+      {/* <MessagingScreen /> */}
+      {/* <Settings /> */}
+      {/* <Conversations /> */}
+      {/* <Profile /> */}
     </View>
   );
 }
@@ -25,7 +35,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', // Noir pour le fond
+    backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
   }

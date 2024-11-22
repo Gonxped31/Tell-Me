@@ -5,19 +5,37 @@ import {
   TextInput,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import UserCard from '../utils/userCard';
+import NotFound from '../utils/notFound';
+import NavBar from '../utils/navBar';
 
 const MainView = () => {
   const [search, setSearch] = useState('');
   const users = [
-    { id: '1', name: 'John Doh', distance: '2 m' },
-    { id: '2', name: 'Sarah Liu', distance: '5 m' },
-    { id: '3', name: 'Jack Lee', distance: '85 m' },
-    { id: '4', name: 'Mary Tong', distance: '1 m' },
+    { id: '1', name: 'John Doh', distance: 2 },
+    { id: '2', name: 'Sarah Liu', distance: 5 },
+    { id: '3', name: 'Jack Lee', distance: 85 },
+    { id: '4', name: 'Mary Tong', distance: 1 },
+    { id: '5', name: 'Dwight Schrute', distance: 100 },
+    { id: '6', name: 'Pam Beesly', distance: 56 },
+    { id: '7', name: 'Jim Halpert', distance: 284 },
+    { id: '8', name: 'Angela Martin', distance: 321 },
+    { id: '9', name: 'Kevin Malone', distance: 147 },
+    { id: '10', name: 'Oscar Martinez', distance: 58 },
+    { id: '11', name: 'Kelly Kapoor', distance: 32 },
+    { id: '12', name: 'Ryan Howard', distance: 0 },
   ];
+
+  const userCard = ({ item }) => (
+    <View style={styles.userCard}>
+      <Icon name="person-circle-outline" size={50} color="#FFF" />
+      <View style={styles.userInfo}>
+        <Text style={styles.userName}>{item.name}</Text>
+        <Text style={styles.userDistance}>Distance: {"" + item.distance} m</Text>
+      </View>
+    </View>
+);
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(search.toLowerCase())
@@ -28,41 +46,28 @@ const MainView = () => {
       <Text style={styles.title}>TELL ME</Text>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Icon name="search-outline" size={20} color="#FFF" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search user"
-          placeholderTextColor="#AAA"
-          value={search}
-          onChangeText={setSearch}
-        />
+      <View style={styles.searchWrapper}>
+        <View style={styles.searchContainer}>
+          <Icon name="search-outline" size={20} color="#FFF" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search user"
+            placeholderTextColor="#AAA"
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
       </View>
 
       {/* Nearby Users */}
       <Text style={styles.subtitle}>Nearby users</Text>
-      <FlatList
+      { filteredUsers.length != 0 ? <FlatList
         data={filteredUsers}
-        renderItem={UserCard}
+        renderItem={userCard}
         keyExtractor={(item) => item.id}
-        style={styles.userList}
-      />
+      /> : <NotFound message={"No user found..."} /> }
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="home-outline" size={25} color="#FFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="person-outline" size={25} color="#FFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="chatbubble-outline" size={25} color="#FFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="settings-outline" size={25} color="#FFF" />
-        </TouchableOpacity>
-      </View>
+      <NavBar />
     </View>
   );
 };
@@ -73,8 +78,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
-    paddingHorizontal: 20,
     paddingTop: 40,
+    width: '100%',
   },
   title: {
     color: '#FFF',
@@ -86,10 +91,13 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#222',
     borderRadius: 8,
     paddingHorizontal: 10,
+    paddingVertical: 5,
     marginBottom: 20,
+    width: '80%'
   },
   searchIcon: {
     marginRight: 10,
@@ -99,25 +107,39 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
   },
+  searchWrapper: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   subtitle: {
     color: '#FFF',
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginLeft: 10
   },
   userList: {
     flex: 1,
   },
-  bottomNav: {
+  userCard: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#222',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#444',
-  },
-  navItem: {
     alignItems: 'center',
+    backgroundColor: '#222',
+    borderRadius: 8,
+    paddingHorizontal: 40,
+    paddingVertical: 20,
+    marginBottom: 10,
   },
+  userInfo: {
+    marginLeft: 10,
+  },
+  userName: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  userDistance: {
+    color: '#AAA',
+    fontSize: 14,
+  }
 });
