@@ -1,32 +1,32 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-export default function Welcome() {
+export default function Welcome({ navigation }) {
   return (
-    <>
+    <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome</Text>
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => alert("Login button pressed")}
+        onPress={() => navigation.navigate("login")}
       >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.signupButton}
-        onPress={() => alert("Sign up button pressed")}
+        onPress={() => navigation.navigate("signup")}
       >
         <Text style={styles.buttonText}>Sign up</Text>
       </TouchableOpacity>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#000",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
+  container: {
+    flex: 1,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   welcomeText: {
     color: "#FFF",
     fontSize: 54,

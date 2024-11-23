@@ -10,7 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavBar from '../utils/navBar';
 
-const Settings = () => {
+const Settings = ({ navigation }) => {
   const [anonymousMessages, setAnonymousMessages] = useState(false);
   const [deleteMessages, setDeleteMessages] = useState(false);
 
@@ -46,7 +46,7 @@ const Settings = () => {
         </View>
       </ScrollView>
 
-      <NavBar />
+      {/* <NavBar /> */}
     </View>
   );
 };

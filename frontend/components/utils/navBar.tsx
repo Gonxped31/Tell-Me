@@ -5,21 +5,21 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const NavBar = () => {
+const NavBar = ({ navigation }) => {
     const buttonSize = 25
     return (
         <View style={styles.bottomNav}>
-            <TouchableOpacity>
-            <Icon name="home-outline" size={buttonSize} color="#FF007F" />
+            <TouchableOpacity onPress={() => navigation.navigate("home")}>
+                <Icon name="home-outline" size={buttonSize} color="#FF007F" />
             </TouchableOpacity>
-            <TouchableOpacity>
-            <Icon name="person-outline" size={buttonSize} color="#FF007F" />
+            <TouchableOpacity onPress={() => navigation.navigate("profile")}>
+                <Icon name="person-outline" size={buttonSize} color="#FF007F" />
             </TouchableOpacity>
-            <TouchableOpacity>
-            <Icon name="chatbubble-outline" size={buttonSize} color="#FF007F" />
+            <TouchableOpacity onPress={() => navigation.navigate("conversations")}>
+                <Icon name="chatbubble-outline" size={buttonSize} color="#FF007F" />
             </TouchableOpacity>
-            <TouchableOpacity>
-            <Icon name="settings-outline" size={buttonSize} color="#FF007F" />
+            <TouchableOpacity onPress={() => navigation.navigate("settings")}>
+                <Icon name="settings-outline" size={buttonSize} color="#FF007F" />
             </TouchableOpacity>
         </View>
     )

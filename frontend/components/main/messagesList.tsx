@@ -8,10 +8,9 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import NavBar from '../utils/navBar';
 import NotFound from '../utils/notFound';
 
-const Conversations = () => {
+const Conversations = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [conversations, setConversations] = useState([
     { id: '1', name: 'John Doe', lastMessageTime: 'less than 1 day' },
@@ -35,7 +34,12 @@ const Conversations = () => {
   };
 
   const renderConversation = ({ item }) => (
-    <View style={styles.conversation}>
+    <TouchableOpacity style={styles.conversation}
+      onPress={() => navigation.navigate("messaging", {
+        navigation: navigation,
+        receiverUsername: item.name
+      })}
+    >
       <View style={styles.conversationInfo}>
         <Icon name="chatbubble-outline" size={25} color="#FFF" style={styles.chatIcon} />
         <View>
@@ -46,7 +50,7 @@ const Conversations = () => {
       <TouchableOpacity onPress={() => deleteConversation(item.id)}>
         <Icon name="trash-outline" size={25} color="#FF007F" />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   const filterdConversations = conversations.filter(
@@ -81,7 +85,7 @@ const Conversations = () => {
         : <NotFound message={"No messages found..."} />
         }
 
-      <NavBar />
+      {/* <NavBar /> */}
     </View>
   );
 };

@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
+import LoadingScreen from '../utils/loadingScreen';
 
-const ResetPassword = () => {
+const ResetPassword = ({ navigation }) => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleConfirm = () => {
-      if (newPassword !== confirmNewPassword) {
-        alert('Passwords do not match');
-      }
+      setIsLoading(true);
+      setTimeout(() => {
+        if (newPassword !== confirmNewPassword || newPassword === "") {
+          alert('Passwords do not match or is empty.');
+          setIsLoading(false)
+        } else {
+          navigation.navigate("login")
+        }
+      }, 1000);
     };
   
     return (
-      <View style={styles.container}>
+      !isLoading ? <View style={styles.container}>
         <Text style={styles.title}>Reset Password</Text>
   
         <View style={styles.inputContainer}>
@@ -53,7 +61,7 @@ const ResetPassword = () => {
             <Text style={styles.buttonText}>Back</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> : <LoadingScreen message={"Reseting password..."} />
     );
 };
 

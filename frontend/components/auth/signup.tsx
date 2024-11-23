@@ -2,11 +2,19 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const SignUp = () => {
+const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const validateSignUp = () => {
+    // Add code to api call (use api.ts file)
+    const validated = true;
+    if (validated) {
+      navigation.navigate("login")
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -52,10 +60,13 @@ const SignUp = () => {
         
       {/* Confirm and Back Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.confirmButton}>
+        <TouchableOpacity style={styles.confirmButton}
+          onPress={() => validateSignUp()}
+        >
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.backButton} // Retour à l'écran précédent
+        <TouchableOpacity style={styles.backButton} 
+          onPress={() => navigation.goBack("welcome")}
         >
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>

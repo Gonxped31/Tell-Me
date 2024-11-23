@@ -11,10 +11,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import EmojiSelector from 'react-native-emoji-selector';
 
-const MessagingScreen = () => {
+const MessagingScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isEmojiVisible, setIsEmojiVisible] = useState(false);
+  const { navigation, receiverUsername } = route.params
 
   const sendMessage = () => {
     if (newMessage.trim()) {
@@ -64,12 +65,9 @@ const MessagingScreen = () => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => alert("back")}>
-          <Icon name="arrow-back-outline" size={30} color="#FF007F" />
-        </TouchableOpacity>
         <View style={styles.profileContainer}>
           <Icon name="person-circle-outline" size={40} color="#FF007F" />
-          <Text style={styles.userName}>John Doh</Text>
+          <Text style={styles.userName}>{receiverUsername}</Text>
         </View>
       </View>
 
@@ -129,11 +127,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    justifyContent: 'center'
   },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 10,
   },
   userName: {
     color: '#FFF',

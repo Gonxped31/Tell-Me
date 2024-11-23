@@ -5,13 +5,17 @@ import {
   TextInput,
   FlatList,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotFound from '../utils/notFound';
 import NavBar from '../utils/navBar';
+import SignOutButton from '../utils/signOut';
+import LoadingScreen from '../utils/loadingScreen';
 
-const MainView = () => {
+const MainView = ({ navigation }) => {
   const [search, setSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const users = [
     { id: '1', name: 'John Doh', distance: 2 },
     { id: '2', name: 'Sarah Liu', distance: 5 },
@@ -28,22 +32,38 @@ const MainView = () => {
   ];
 
   const userCard = ({ item }) => (
-    <View style={styles.userCard}>
+    <TouchableOpacity style={styles.userCard} 
+    onPress={() => navigation.navigate("rateUser", {
+      navigation: navigation,
+      infos: item
+    })}>
       <Icon name="person-circle-outline" size={50} color="#FFF" />
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
         <Text style={styles.userDistance}>Distance: {"" + item.distance} m</Text>
       </View>
-    </View>
-);
+    </TouchableOpacity>
+  );
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleSignOut = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigation.navigate('login');
+    }, 1000);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>TELL ME</Text>
+    !isLoading ? <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>TELL ME</Text>
+        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+          <Icon name="log-out-outline" size={24} color="#FFF" />
+        </TouchableOpacity>
+      </View>
 
       {/* Search Bar */}
       <View style={styles.searchWrapper}>
@@ -65,10 +85,11 @@ const MainView = () => {
         data={filteredUsers}
         renderItem={userCard}
         keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingBottom: 55 }}
       /> : <NotFound message={"No user found..."} /> }
 
-      <NavBar />
-    </View>
+      <NavBar navigation={navigation} />
+    </View> : <LoadingScreen message={"Singing out..."}/>
   );
 };
 
@@ -80,6 +101,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     paddingTop: 40,
     width: '100%',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 10,
+    marginBottom: 20,
   },
   title: {
     color: '#FFF',
@@ -98,6 +126,16 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     marginBottom: 20,
     width: '80%'
+  },
+  signOutButton: {
+    backgroundColor: '#000',
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   searchIcon: {
     marginRight: 10,

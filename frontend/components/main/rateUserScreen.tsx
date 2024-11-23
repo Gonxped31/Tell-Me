@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const RateUserScreen = ({ infos }) => {
+const RateUserScreen = ({ route }) => {
   const [rating, setRating] = useState(0);
   const [averageScore, setAverageScore] = useState(4.3); // Mocked average score
   const [isSendDisabled, setIsSendDisabled] = useState(true)
+  const { navigation, infos } = route.params
+
 
   const handleRating = (value: number) => {
     setIsSendDisabled(false);
@@ -61,9 +63,9 @@ const RateUserScreen = ({ infos }) => {
   return (
     <View style={styles.container}>
       {/* Back Button */}
-      <TouchableOpacity onPress={() => alert("back")} style={styles.backButton}>
+      {/* <TouchableOpacity onPress={() => alert("back")} style={styles.backButton}>
         <Icon name="arrow-back-outline" size={30} color="#FFF" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* Profile and User Info */}
       <View style={styles.profileContainer}>
@@ -100,6 +102,7 @@ const RateUserScreen = ({ infos }) => {
         <TouchableOpacity style={
           isSendDisabled ? styles.disabledButton : styles.confirmButton}
           onPress={handleSendDisable}
+          disabled={isSendDisabled}
           >
           {/* <Icon name='send' size={20}></Icon> */}
           <Text style={styles.messageButtonText}>Send rating</Text>
@@ -107,7 +110,12 @@ const RateUserScreen = ({ infos }) => {
       </View>
 
       {/* Private Message Button */}
-      <TouchableOpacity style={styles.messageButton}>
+      <TouchableOpacity style={styles.messageButton}
+        onPress={() => navigation.navigate("messaging", {
+          navigation: navigation,
+          receiverUsername: infos.name
+        })}
+      >
         <Text style={styles.messageButtonText}>Private message</Text>
       </TouchableOpacity>
     </View>
@@ -121,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
     paddingTop: 20,
-    width: "80%"
+    width: "100%"
   },
   backButton: {
     marginBottom: 20,

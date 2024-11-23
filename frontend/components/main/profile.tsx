@@ -9,7 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavBar from '../utils/navBar';
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   const [username, setUsername] = useState('gonxped31');
   const [email, setEmail] = useState('gonxped31@gmail.com');
   const [password, setPassword] = useState('********');
@@ -99,7 +99,7 @@ const Profile = () => {
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
 
-      <NavBar />
+      {/* <NavBar /> */}
 
     </View>
   );

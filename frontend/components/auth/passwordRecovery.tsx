@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import LoadingScreen from '../utils/loadingScreen';
 
-const PasswordRecovery = () => {
+const PasswordRecovery = ({ route }) => {
   const [code, setCode] = useState(['', '', '', '']); // Code à 4 chiffres
+  const [validCode, setValidCode] = useState("1234")
+  const [loadingScreen, setLoadingScreen] = useState(false)
+  const { navigation, email } = route.params
 
   const handleCodeChange = (value: string, index: number) => {
     if (!value || value.length > 1) return; // Ensure single character input
@@ -12,12 +16,24 @@ const PasswordRecovery = () => {
     setCode(newCode);
   };
 
+  const validateCode = () => {
+    setLoadingScreen(true);
+    setTimeout(() => {
+      if (code.join("") === validCode){
+        navigation.navigate("resetPassword");
+      } else{
+        alert("Invalide code, try again.");
+        setLoadingScreen(false);
+      }
+    }, 2000);
+  }
+
   return (
-    <View style={styles.container}>
+    !loadingScreen ? <View style={styles.container}>
       <Text style={styles.title}>
         <Icon name="lock-open-outline" size={30} color="#FF007F" /> Password Recovery
       </Text>
-      <Text style={styles.subtitle}>Enter the code sent to ...</Text>
+      <Text style={styles.subtitle}>Enter the code sent to {email}</Text>
 
       {/* Code Input */}
       <View style={styles.codeContainer}>
@@ -34,20 +50,22 @@ const PasswordRecovery = () => {
 
       {/* Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.confirmButton}>
+        <TouchableOpacity style={styles.confirmButton}
+          onPress={() => validateCode()}
+        >
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.newCodeButton}>
           <Icon name="paper-plane-outline" size={20} color="#FFF" />
           <Text style={styles.buttonText}>New code</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.backButton}
         >
           <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
-    </View>
+    </View> : <LoadingScreen navigation={navigation} message={"Verifying code..."}/>
   );
 }
 
@@ -98,7 +116,6 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     backgroundColor: '#00C896',
-    width: '80%',
     paddingHorizontal: 50,
     paddingVertical: 15,
     borderRadius: 25,
@@ -107,8 +124,7 @@ const styles = StyleSheet.create({
   },
   newCodeButton: {
     backgroundColor: '#FFC107',
-    width: '40%',
-    paddingHorizontal: 30,
+    paddingHorizontal: 35,
     paddingVertical: 15,
     borderRadius: 25,
     flexDirection: 'row',
@@ -118,7 +134,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     backgroundColor: '#FF007F',
-    width: '80%',
     paddingHorizontal: 60,
     paddingVertical: 15,
     borderRadius: 25,

@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
+import LoadingScreen from '../utils/loadingScreen';
 
-const Login = () => {
+const Login = ({ navigation }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [actualUserEmail, setActualUserEmail] = useState("email@gmail.com");
+    const [isLoading, setIsLoading] = useState(false)
+
+    const validateLogIn = () => {
+      setIsLoading(true);
+      setTimeout(() => {
+          navigation.navigate("home");
+      }, 1000)
+    }
   
     return (
-      <View style={styles.container}>
+      !isLoading ? <View style={styles.container}>
         <Text style={styles.title}>Login</Text>
   
         {/* Username Input */}
@@ -50,25 +60,30 @@ const Login = () => {
   
         {/* Forgot Password */}
         <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot password?</Text>
+          <Text style={styles.forgotPassword}
+            onPress={() => navigation.navigate("passRecovery", {
+              navigation: navigation,
+              email: actualUserEmail
+            })}
+          >Forgot password?</Text>
         </TouchableOpacity>
   
         {/* Confirm and Back Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
             style={styles.confirmButton}
-            onPress={() => alert("Confirm button pressed")}
+            onPress={() => validateLogIn()}
             >
             <Text style={styles.buttonText}>Confirm</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => alert("Back button pressed")} // Go back to the previous screen
+            onPress={() => navigation.popToTop()}
           >
             <Text style={styles.buttonText}>Back</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View>: <LoadingScreen message={"Loging in..."} />
     );
 };
 
