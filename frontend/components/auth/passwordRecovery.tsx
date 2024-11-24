@@ -59,13 +59,8 @@ const PasswordRecovery = ({ route }) => {
           <Icon name="paper-plane-outline" size={20} color="#FFF" />
           <Text style={styles.buttonText}>New code</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity
-          style={styles.backButton}
-        >
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity> */}
       </View>
-    </View> : <LoadingScreen navigation={navigation} message={"Verifying code..."}/>
+    </View> : <LoadingScreen message={"Verifying code..."}/>
   );
 }
 

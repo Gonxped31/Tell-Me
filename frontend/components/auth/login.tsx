@@ -61,7 +61,7 @@ const Login = ({ navigation }) => {
         {/* Forgot Password */}
         <TouchableOpacity>
           <Text style={styles.forgotPassword}
-            onPress={() => navigation.navigate("passRecovery", {
+            onPress={() => navigation.navigate("emailForRecovery", {
               navigation: navigation,
               email: actualUserEmail
             })}
