@@ -87,15 +87,3 @@ CREATE TABLE Message (
 );
 
 ```
-
-
-### Firebase
-
-```
-Messages: {
-    id: [UNIQUE, str],
-    sender_id: [UNIQUE, uuid],
-    receiver_id: [UNIQUE, uuid],
-    content
-}
-```
