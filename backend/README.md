@@ -51,7 +51,7 @@ This section is for the middleware that handle updates between Firebase and post
 
 ## Database schemas
 ### PostgreSQL
-SQL Tables template and relationship
+SQL Entities and relationships
 ```
 CREATE TABLE User (
     id UUID PRIMARY KEY,
