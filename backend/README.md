@@ -51,5 +51,51 @@ This section is for the middleware that handle updates between Firebase and post
 
 ## Database schemas
 ### PostgreSQL
+SQL Tables template and relationship
+```
+CREATE TABLE User (
+    id UUID PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(100) UNIQUE NOT NULL,
+    average_rate INT
+);
+
+CREATE TABLE Rating (
+    id SERIAL PRIMARY KEY,
+    rater_id UUID REFERENCES User(id),
+    rated_id UUID REFERENCES User(id),
+    rate INT NOT NULL
+);
+
+CREATE TABLE Conversation (
+    id UUID PRIMARY KEY,
+    user_1_id UUID REFERENCES User(id),
+    user_2_id UUID REFERENCES User(id),
+    last_message_id REFERENCES Message(id),
+    last_message TIMESTAMP,
+);
+
+CREATE TABLE Message (
+    id UUID PRIMARY KEY,
+    conversation_id UUID REFERENCES Conversation(id),
+    sender_id UUID REFERENCES User(id),
+    message_line TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    is_read BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP
+);
+
+```
+
 
 ### Firebase
+
+```
+Messages: {
+    id: [UNIQUE, str],
+    sender_id: [UNIQUE, uuid],
+    receiver_id: [UNIQUE, uuid],
+    content
+}
+```
