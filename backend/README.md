@@ -2,7 +2,6 @@
 ## Infrastructure
 - **Flask** for the service.
 - **PostgreSQL** for the database.
-- **Firebase** for messages management.
 
 ## Configurations
 - [ ] Configure PostgreSQL for the database side.
