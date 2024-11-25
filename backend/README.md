@@ -1,11 +1,11 @@
 # Roadmap for the backend
 ## Infrastructure
-- **Flask** for the service.
+- **Fast API** for the service.
 - **PostgreSQL** for the database.
 
 ## Configurations
-- [ ] Configure PostgreSQL for the database side.
-- [ ] Configure Flask for the server side.
+- [X] Configure PostgreSQL for the database side.
+- [X] Configure Fast API for the server side.
 
 ## Feature and Endpoints (**Need to be updated)
 ### Authentications:
