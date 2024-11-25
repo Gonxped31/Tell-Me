@@ -1,19 +1,16 @@
-# Core Flask
-Flask         # The main Flask framework
-
-# Database and ORM
-Flask-SQLAlchemy
-psycopg2-binary 
-
-# Firebase Integration
-firebase-admin
-
-# Testing
-pytest
-pytest-flask
-
-# Environment Variables
+fastapi
+fastapi_sqlalchemy
+uvicorn
+psycopg2
 python-dotenv
-
-# Others
+sqlalchemy
+pyjwt
 uuid
+pydantic
+pydantic_settings
+passlib
+datetime
+pytz
+tzdata
+bcrypt
+python-multipart
