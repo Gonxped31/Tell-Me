@@ -70,11 +70,11 @@ const RateUserScreen = ({ route }) => {
       {/* Profile and User Info */}
       <View style={styles.profileContainer}>
         <Icon name="person-circle-outline" size={80} color="#FFF" />
-        <Text style={styles.userName}>{infos.name}</Text>
+        <Text style={styles.userName}>{infos.username}</Text>
       </View>
 
       {/* Distance */}
-      <Text style={styles.distance}>Distance: {infos.distance} m</Text>
+      <Text style={styles.distance}>Distance: {infos.distance_m} m</Text>
 
       {/* Actual User Score */}
       <View style={styles.scoreContainer}>

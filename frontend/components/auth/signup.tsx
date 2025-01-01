@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { authAPI } from '@/utils/api';
+import { useAuth } from '@/hooks/useAuth';
 
 const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -9,11 +11,19 @@ const SignUp = ({ navigation }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const validateSignUp = () => {
-    // Add code to api call (use api.ts file)
-    const validated = true;
-    if (validated) {
-      navigation.navigate("login")
+    const data = {
+      username: username,
+      email: email,
+      password: password
     }
+
+    authAPI.signup(data).then(
+      (data) => {
+        navigation.navigate("login")
+      }
+    ).catch((error) => {
+        console.error('Error creating account:', error);
+    });
   }
 
   return (

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_REFRESH_SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
-    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 
     ALGORITHM: str = "HS256"
     API_V1_STR: str = "/api"
     PROJECT_NAME: str = "Tell me"

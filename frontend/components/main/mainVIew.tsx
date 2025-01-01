@@ -1,35 +1,76 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   TextInput,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
+  TouchableOpacity
+
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotFound from '../utils/notFound';
 import NavBar from '../utils/navBar';
-import SignOutButton from '../utils/signOut';
 import LoadingScreen from '../utils/loadingScreen';
+import { UserAPI } from '@/utils/api';
+import useLocation from '@/hooks/useLocation';
+import { useAuth } from '@/hooks/useAuth';
+import Toast from 'react-native-toast-message';
 
 const MainView = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const users = [
-    { id: '1', name: 'John Doh', distance: 2 },
-    { id: '2', name: 'Sarah Liu', distance: 5 },
-    { id: '3', name: 'Jack Lee', distance: 85 },
-    { id: '4', name: 'Mary Tong', distance: 1 },
-    { id: '5', name: 'Dwight Schrute', distance: 100 },
-    { id: '6', name: 'Pam Beesly', distance: 56 },
-    { id: '7', name: 'Jim Halpert', distance: 284 },
-    { id: '8', name: 'Angela Martin', distance: 321 },
-    { id: '9', name: 'Kevin Malone', distance: 147 },
-    { id: '10', name: 'Oscar Martinez', distance: 58 },
-    { id: '11', name: 'Kelly Kapoor', distance: 32 },
-    { id: '12', name: 'Ryan Howard', distance: 0 },
-  ];
+  const [isFindingUser, setIsFindingUser] = useState(true);
+  const [users, setUsers] = useState([]);
+  const { location, locationStatus, error } = useLocation({
+    timeInterval: 10000, // Update every 10 seconds
+    distanceInterval: 5,  // Update every 5 meters
+  });
+  const { logout, user } = useAuth();
+
+  useEffect(() => {
+    if (location.latitude === null || location.longitude === null) {
+      return;
+    }
+
+    const input = {
+      username: user.username,
+      latitude: `${location.latitude}`,
+      longitude: `${location.longitude}`
+    }
+
+    UserAPI.updateLocation(input)
+    .then((data) => {
+      UserAPI.getNearbyUsers(input.latitude, input.longitude, setIsFindingUser).then(
+        (data) =>{
+          console.log(data);
+          const validData = data.filter((fetcheduser) => fetcheduser.username != user.username)
+          setUsers(validData);
+        }
+      ).catch((error) => {
+        console.error('Error getting users:', error);
+      });
+    })
+    .catch((error) => {
+      console.error('Error updating user location', error)
+    });
+
+    // setUsers([
+    //     { id: '1', name: 'John Doh', distance: 2 },
+    //     { id: '2', name: 'Sarah Liu', distance: 5 },
+    //     { id: '3', name: 'Jack Lee', distance: 85 },
+    //     { id: '4', name: 'Mary Tong', distance: 1 },
+    //     { id: '5', name: 'Dwight Schrute', distance: 100 },
+    //     { id: '6', name: 'Pam Beesly', distance: 56 },
+    //     { id: '7', name: 'Jim Halpert', distance: 284 },
+    //     { id: '8', name: 'Angela Martin', distance: 321 },
+    //     { id: '9', name: 'Kevin Malone', distance: 147 },
+    //     { id: '10', name: 'Oscar Martinez', distance: 58 },
+    //     { id: '11', name: 'Kelly Kapoor', distance: 32 },
+    //     { id: '12', name: 'Ryan Howard', distance: 0 },
+    //   ]
+    // )
+  }, [location])
 
   const userCard = ({ item }) => (
     <TouchableOpacity style={styles.userCard} 
@@ -39,21 +80,31 @@ const MainView = ({ navigation }) => {
     })}>
       <Icon name="person-circle-outline" size={50} color="#FFF" />
       <View style={styles.userInfo}>
-        <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.userDistance}>Distance: {"" + item.distance} m</Text>
+        <Text style={styles.userName}>{item.username}</Text>
+        <Text style={styles.userDistance}>Distance: {"" + item.distance_m} m</Text>
       </View>
     </TouchableOpacity>
   );
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredUsers = users.length > 0 ? users.filter((user) =>
+    user.username.toLowerCase().includes(search.toLowerCase())
+  ) : [];
 
   const handleSignOut = () => {
     setIsLoading(true);
-    setTimeout(() => {
+    logout().then((data) => {
+      Toast.show({
+        type: 'info',
+        text1: 'Logged out!'
+      })
       navigation.navigate('login');
-    }, 1000);
+    }).catch((error) => {
+      console.error('Error during log out', error)
+      Toast.show({
+        type: 'error',
+        text1: 'Error during log out.'
+      })
+    })
   };
 
   return (
@@ -81,19 +132,31 @@ const MainView = ({ navigation }) => {
 
       {/* Nearby Users */}
       <Text style={styles.subtitle}>Nearby users</Text>
-      { filteredUsers.length != 0 ? <FlatList
+      { !isFindingUser  ? <FlatList
         data={filteredUsers}
         renderItem={userCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.username}
         contentContainerStyle={{ paddingBottom: 55 }}
-      /> : <NotFound message={"No user found..."} /> }
+      /> : <LoadingScreen message={"Loading users..."} styles={loadingStyle} loaderSize='60' />}
 
       <NavBar navigation={navigation} />
-    </View> : <LoadingScreen message={"Singing out..."}/>
+    </View> : <LoadingScreen message={"Singing out..."} />
   );
 };
 
 export default MainView;
+
+const loadingStyle = {
+  text: {
+    marginBottom: 50,
+    marginTop: -200,
+  },
+  loader: {
+    marginTop: -10, // Move the loader 30 pixels higher,
+    with: 50,
+    
+  },
+}
 
 const styles = StyleSheet.create({
   container: {

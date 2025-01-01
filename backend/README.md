@@ -7,6 +7,10 @@
 - [X] Configure PostgreSQL for the database side.
 - [X] Configure Fast API for the server side.
 
+1. Exécuter le backend: `pipenv shell`
+2. Installer les dépendances (à faire une seule fois): `pip install -r requirements.txt`
+3. Lancer le serveur: `pipenv run start`
+
 ## Feature and Endpoints (**Need to be updated)
 ### Authentications:
 This section is to authenticate users (sign up. login and session management).

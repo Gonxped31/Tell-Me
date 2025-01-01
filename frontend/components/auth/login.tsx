@@ -1,20 +1,38 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
 import LoadingScreen from '../utils/loadingScreen';
+import { useAuth } from '@/hooks/useAuth';
+import Toast from 'react-native-toast-message';
 
 const Login = ({ navigation }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [actualUserEmail, setActualUserEmail] = useState("email@gmail.com");
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setLoading] = useState(false);
+    const { login, isAuthenticated, user } = useAuth();
 
-    const validateLogIn = () => {
-      setIsLoading(true);
-      setTimeout(() => {
+    const handleLogin = async () => {
+      try {
+        const success = await login(username, password, setLoading);
+        if (success) {
           navigation.navigate("home");
-      }, 1000)
-    }
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Authentication Failed',
+            text2: 'Incorrect username or password. Please try again.',
+          });
+        }
+      } catch (error) {
+        // console.error('An error occured', error)
+        Toast.show({
+          type: 'error',
+          text1: 'Authentication Failed',
+          text2: 'An error occured.',
+        });
+      }
+    };
   
     return (
       !isLoading ? <View style={styles.container}>
@@ -72,7 +90,7 @@ const Login = ({ navigation }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
             style={styles.confirmButton}
-            onPress={() => validateLogIn()}
+            onPress={() => handleLogin()}
             >
             <Text style={styles.buttonText}>Confirm</Text>
           </TouchableOpacity>
