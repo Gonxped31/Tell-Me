@@ -1,22 +1,48 @@
 import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 import { User, UserShort } from '../models/user'
-import { postData, fetchData, authTokens } from './dbfunctions';
+import { Score } from '@/models/scores';
+import { postData, fetchData, authTokens, putData } from './dbfunctions';
 
 export const UserAPI = {
 
+    updateUser: async function (email: string, data, setLoading = null, cancel = null) {
+        const result = putData(`/update_user/${email}`, data, setLoading);
+        return result;
+    },
+
+    /** Location */
     updateLocation: async function (data, setLoading = null, cancel = null) {
         const result = await postData(`/update_user_location`, data, setLoading);
         return result;
     },
 
     getNearbyUsers: async function (latitude: Float, longitude: Float, setLoading = null, cancel = false) {
-        const data = {
-            latitude: latitude,
-            longitude: longitude
-        }
         const result = await fetchData(`/get_nearby_users/${latitude}/${longitude}`, setLoading);
         return result.map((user) => new UserShort(user));
+    },
+
+    /** Score */
+    getScores: async function (username: string, setLoading = null, cancel = null) {
+        const result = await fetchData(`/get_scores/${username}`, setLoading);
+        return result.map((score) => new Score(score));
+    },
+
+    addScore: async function (data, setLoading = null, cancel = null) {
+        const result = await postData(`/add_score`, data, setLoading);
+        return result
+    },
+
+    /** Code erification */
+    sendVerificationCode: async function (email: string, setLoading = null, cancel = null) {
+        const result: boolean = await postData(`/send_verification_code/${email}`, email, setLoading);
+        return result;
+    },
+
+    validateVerificationCode: async function (data, setLoading = null, cancel = null) {
+        const result: boolean = await postData(`/password_reset/verify/${data.email}/${data.code}`, data, setLoading);
+        return result;
     }
+
 }
 
 export const authAPI = {

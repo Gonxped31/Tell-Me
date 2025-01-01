@@ -1,22 +1,40 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
 import LoadingScreen from '../utils/loadingScreen';
+import Toast from 'react-native-toast-message';
+import { UserAPI } from '@/utils/api';
 
-const ResetPassword = ({ navigation }) => {
+const ResetPassword = ({ route }) => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { navigation, email } = route.params;
 
     const handleConfirm = () => {
       setIsLoading(true);
-      setTimeout(() => {
-        if (newPassword !== confirmNewPassword || newPassword === "") {
-          alert('Passwords do not match or is empty.');
-          setIsLoading(false)
-        } else {
-          navigation.navigate("login")
+      if (newPassword !== confirmNewPassword || newPassword === "") {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid password'
+        });
+        setIsLoading(false);
+      } else {
+        const data = {
+          password: newPassword
         }
-      }, 1000);
+        UserAPI.updateUser(email, data)
+        .then((response) => {
+          setIsLoading(false);
+          navigation.navigate("login");
+        })
+        .catch((error) => {
+          console.error('An error occured', error);
+          Toast.show({
+            type: 'error',
+            text1: 'An error occured'
+          });
+        })
+      }
     };
   
     return (
@@ -35,7 +53,7 @@ const ResetPassword = ({ navigation }) => {
         </View>
   
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>Confirm new password</Text>
           <View>
             <TextInput
               style={styles.input}

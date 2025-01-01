@@ -39,13 +39,7 @@ const Index = () => {
         <Stack.Screen
           name="passRecovery"
           component={PasswordRecovery}
-          options={{
-            headerTitle: "",
-            headerStyle: {
-              backgroundColor: '#000',
-            },
-            headerTintColor: '#FFF',
-          }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="resetPassword"

@@ -19,4 +19,4 @@ uuid = "*"
 python_version = "3.11"
 
 [scripts]
-start = "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+start = "start redis-server & uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"

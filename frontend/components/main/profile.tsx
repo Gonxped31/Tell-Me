@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,29 +8,56 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavBar from '../utils/navBar';
+import { useAuth } from '@/hooks/useAuth';
+import { validateInputs } from '@/constants/functions';
+import { UserAPI } from '@/utils/api';
+import Toast from 'react-native-toast-message';
 
 const Profile = ({ navigation }) => {
-  const [username, setUsername] = useState('gonxped31');
-  const [email, setEmail] = useState('gonxped31@gmail.com');
-  const [password, setPassword] = useState('********');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const { user } = useAuth();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible);
   };
 
-  const handleSave = () => {
-    // Add save logic here
-    if (!username || !email || !password) {
-        if (password.trim() === "" || email.trim() === "" || username.trim() === ""){
-            alert("All fields must contains something.");
-        } else {
-            alert("Fields cannot contain spaces only.")
-        }
-    } else {
-        alert('Profile saved successfully!');
+  const handleSave = () => { 
+    if (validateInputs(username, email, password)) {
+      const data = password.length === 0 ? {
+        username: username,
+        email: email
+      } :
+      {
+        username: username,
+        email: email,
+        password: password
+      };
+
+      Toast.show({
+        type: 'success',
+        text1: 'Profile updated.'
+      });
+
+      // UserAPI.updateUser(user.email, data)
+      // .then((_) => {
+      //   Toast.show({
+      //     type: 'success',
+      //     text1: 'Profile updated.'
+      //   });
+      // })
+      // .catch((error) => {
+      //   console.error('An error occured',error);
+      // });
     }
   };
+
+  useEffect(() => {
+    setUsername(user.username);
+    setEmail(user.email);
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -72,7 +99,7 @@ const Profile = ({ navigation }) => {
 
       {/* Password Field */}
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>New Password</Text>
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}

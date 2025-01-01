@@ -9,7 +9,6 @@ import {
 
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import NotFound from '../utils/notFound';
 import NavBar from '../utils/navBar';
 import LoadingScreen from '../utils/loadingScreen';
 import { UserAPI } from '@/utils/api';
@@ -55,21 +54,6 @@ const MainView = ({ navigation }) => {
       console.error('Error updating user location', error)
     });
 
-    // setUsers([
-    //     { id: '1', name: 'John Doh', distance: 2 },
-    //     { id: '2', name: 'Sarah Liu', distance: 5 },
-    //     { id: '3', name: 'Jack Lee', distance: 85 },
-    //     { id: '4', name: 'Mary Tong', distance: 1 },
-    //     { id: '5', name: 'Dwight Schrute', distance: 100 },
-    //     { id: '6', name: 'Pam Beesly', distance: 56 },
-    //     { id: '7', name: 'Jim Halpert', distance: 284 },
-    //     { id: '8', name: 'Angela Martin', distance: 321 },
-    //     { id: '9', name: 'Kevin Malone', distance: 147 },
-    //     { id: '10', name: 'Oscar Martinez', distance: 58 },
-    //     { id: '11', name: 'Kelly Kapoor', distance: 32 },
-    //     { id: '12', name: 'Ryan Howard', distance: 0 },
-    //   ]
-    // )
   }, [location])
 
   const userCard = ({ item }) => (

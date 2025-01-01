@@ -32,7 +32,7 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"}
         )
     
-    user = await UserService.get_user(token_data.sub)
+    user = await UserService.get_user_by_username(token_data.sub)
     
     if not user:
         raise HTTPException(

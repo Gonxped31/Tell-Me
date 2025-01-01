@@ -16,3 +16,4 @@ tzdata
 bcrypt
 python-multipart
 jose
+redis

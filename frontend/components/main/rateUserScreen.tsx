@@ -1,24 +1,74 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
+import { UserAPI } from '@/utils/api';
+import LoadingScreen from '../utils/loadingScreen';
+import { Score } from '@/models/scores';
+import { useAuth } from '@/hooks/useAuth';
 
 const RateUserScreen = ({ route }) => {
-  const [rating, setRating] = useState(0);
-  const [averageScore, setAverageScore] = useState(4.3); // Mocked average score
+  const [rating, setScore] = useState(0);
+  const [averageScore, setAverageScore] = useState(0.0);
   const [isSendDisabled, setIsSendDisabled] = useState(true)
+  const [isFetchingInfosLoading, setIsFetchingInfosLoading] = useState(false);
+  const [isAddingScoreLoading, setIsAddingScoreLoading] = useState(false);
   const { navigation, infos } = route.params
+  const { user } = useAuth();
 
+  const calculateAverage = (numbers: number[]): number => {
+    if (numbers.length === 0) {
+      throw new Error("Cannot calculate the average of an empty list");
+    }
+    const sum = numbers.reduce((acc, num) => acc + num, 0);
+    return sum / numbers.length;
+  }
+
+  const findAverageScore = (scoresList: Score[]): number => {
+    const scores = scoresList.map((score) => score.score);
+    if (scores.length == 1){
+      return scores[0] / 1
+    }
+    return calculateAverage(scores);
+  }
+
+  const getRaterScoring = (scoresList: Score[]): number => {
+    const raterScore = scoresList.filter((score) => score.rated_by == user.username);
+    if (raterScore.length > 0) {
+      return raterScore[0].score
+    }
+    return 0
+  }
 
   const handleRating = (value: number) => {
     setIsSendDisabled(false);
-    setRating(value); 
+    setScore(value); 
   };
 
   const handleSendDisable = () => {
     if (!isSendDisabled) {
-      alert("Rated " + rating + " !");
+      const data = {
+        rated_by: user.username,
+        rated_to: infos.username,
+        score: rating
+      };
+
+      UserAPI.addScore(data, setIsAddingScoreLoading)
+      .then((data) => {
+        Toast.show({
+          type: 'success',
+          text1: 'Score sent !'
+        });
+      })
+      .catch((error) => {
+        console.error('An error occured', error);
+        Toast.show({
+          type: 'erro',
+          text1: 'Error',
+          text2: 'An error occured while sending the score.'
+        });
+      })
       setIsSendDisabled(true);
-      setRating(0);
     }
   }
 
@@ -60,7 +110,32 @@ const RateUserScreen = ({ route }) => {
     return stars;
   };
 
+  useEffect(() => {
+    UserAPI.getScores(infos.username, setIsFetchingInfosLoading)
+    .then((data) => {
+      console.log(data);
+      if (data) {
+        if (data.length > 0){
+          setAverageScore(findAverageScore(data));
+          setScore(getRaterScoring(data));
+        } else {
+          setAverageScore(0.0);
+          setScore(0)
+        }
+      }
+    })
+    .catch((error) => {
+      console.error('An error occured', error)
+      Toast.show({
+        type: 'error',
+        text1: 'Erreur',
+        text2: 'An error occured while fetching user infos'
+      })
+    })
+  }, [])
+
   return (
+    isFetchingInfosLoading ? <LoadingScreen message={"Fetching user info..."}/> : 
     <View style={styles.container}>
       {/* Back Button */}
       {/* <TouchableOpacity onPress={() => alert("back")} style={styles.backButton}>
@@ -78,7 +153,7 @@ const RateUserScreen = ({ route }) => {
 
       {/* Actual User Score */}
       <View style={styles.scoreContainer}>
-        <Text style={styles.averageScoreLabel}>Current Score:</Text>
+        <Text style={styles.averageScoreLabel}>User average Score:</Text>
         <View style={styles.scoreRow}>{renderStars(averageScore)}</View>
         <Text style={styles.averageScoreText}>{averageScore.toFixed(1)}</Text>
       </View>
@@ -105,7 +180,7 @@ const RateUserScreen = ({ route }) => {
           disabled={isSendDisabled}
           >
           {/* <Icon name='send' size={20}></Icon> */}
-          <Text style={styles.messageButtonText}>Send rating</Text>
+          { isAddingScoreLoading ? <LoadingScreen loaderSize='small'/> : <Text style={styles.messageButtonText}>Send rating</Text>}
         </TouchableOpacity>
       </View>
 

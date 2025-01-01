@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 
-const LoadingScreen = ({ message = "loading...", styles = {}, loaderSize = "large" }) => {
+const LoadingScreen = ({ message = null, styles = {}, loaderSize = "large" }) => {
   return (
     <View style={StyleSheet.flatten([defaultStyles.container, styles.container])}>
-      <Text style={StyleSheet.flatten([defaultStyles.text, styles.text])}>
+      {message && <Text style={StyleSheet.flatten([defaultStyles.text, styles.text])}>
         {message}
-      </Text>
+      </Text>}
       <ActivityIndicator
         size={loaderSize}
         color="#FFF"

@@ -37,18 +37,15 @@ class LocationService:
         ).order_by("distance_m")
 
         rows = query.all()
-        
+
         result = []
 
         for row in rows:
             username = row.username
             distance = row.distance_m
-            full_user = UserService.get_user(username)
             result.append({
                 "username": username,
                 "distance_m": distance,
-                "email": full_user.email,
-                "average_rate": full_user.average_rate
             })
 
         return result

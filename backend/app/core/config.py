@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api"
     PROJECT_NAME: str = "Tell me"
     VERSION: str = "0.0.1"
+    EMAIL_SENDER: str = "samirgbian31@gmail.com"
+    SMTP_SERVER: str = "smtp.gmail.com"
+    SMTP_PORT: str = "587"
+    REDIS_PORT: str = "6379"
 
     class Config:
         case_sensitive = True

@@ -1,16 +1,55 @@
-from fastapi import APIRouter, HTTPException, Path, Query, status
-from typing import Dict
-from app.schemas.user_schema import UserSchema, UserCreateSchema
-from app.schemas.geography_schema import PositionSchema, LocationSchema
+from fastapi import APIRouter, HTTPException, status, Path
+from app.schemas.user_schema import UserSchema, UserCreate
 from app.services.user_service import UserService
-from app.services.location_service import LocationService
-from typing import List, Dict
+from pydantic import EmailStr
+import redis, os
 
 users_router = APIRouter()
+
+r = redis.Redis(host=os.getenv("DB_HOST"), port=6379, db=0)
 
 @users_router.get("/get_users")
 async def get_users():
     return {"message": "Users"}
+
+@users_router.post(
+    "/send_verification_code/{email}",
+    response_model=bool,
+    description="Check if the email exists and send a verification code.",
+    summary="Check if the email exists and send a verification code."
+)
+async def send_verification_code(email: str = Path(...)) -> bool:
+    print(email)
+    user = await UserService.get_user_by_email(email)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with this email: '{email}' doesn't exist")
+    if (await UserService.send_verification_code(email)):
+        return True
+    return False
+    
+@users_router.post(
+    "/password_reset/verify/{email}/{code}",
+    response_model=bool,
+    description="Verify verification code.",
+    summary="Verify verification code."
+)
+def verify_password_reset_code(email: str = Path(...), code: str = Path(...)) -> bool:
+    print(email)
+    print(code)
+    # Retrieve the code from Redis
+    reset_code_key = f"password_reset_code:{email}"
+    stored_code = r.get(reset_code_key)
+
+    if not stored_code:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset code")
+
+    if stored_code.decode("utf-8") != code:
+        raise HTTPException(status_code=400, detail="Incorrect reset code")
+
+    # Code is valid - delete it to prevent reuse
+    r.delete(reset_code_key)
+
+    return True
 
 @users_router.post(
     "/add_user",
@@ -18,11 +57,11 @@ async def get_users():
     description="Add a new User",
     summary="Add a new User"
 )
-async def add_user(user: UserCreateSchema):
+async def add_user(user: UserCreate):
     infos = {"username": user.username, "email": user.email, "password": user.password}
-    user = await UserService.authenticate_user(user.username, user.password)
+    user = await UserService.signUp(user.username, user.email)
     if user:
-        raise HTTPException(status_code=400, detail=f"User with this username: '{infos['username']}' already exists")
+        raise HTTPException(status_code=400, detail=f"User with this username/email: '{infos['username']}/${infos['email']}' already exist")
     saved_user = await UserService.save_user(**infos)
     return saved_user
 
@@ -40,46 +79,11 @@ async def delete_user(
         raise HTTPException(status_code=404, detail=f"User with this username: '{username}' not found")
     return user
 
-#TODO
-@users_router.put("/update_user/{user_id}/{infos}")
-async def update_user():
-    return {"message": "User updated"}
-
-@users_router.post(
-    "/update_user_location",
-    response_model=Dict,
-    description="Update user location",
-    summary="Update user location"
+@users_router.put(
+    "/update_user/{email}",
+    response_model=UserSchema,
+    description="Check if the email exists and send a verification code.",
+    summary="Check if the email exists and send a verification code."
 )
-async def update_user_location(location: LocationSchema):
-    try:
-        if location.latitude == None or location.longitude == None:
-            raise ValueError("Latitude and Longitude should not be null")
-
-        location_updated = await LocationService.update_user_location(
-            username=location.username,
-            latitude=float(location.latitude),
-            longitude=float(location.longitude)
-        )
-    except HTTPException:
-        raise HTTPException(status_code=404, detail=f"User with this username: '{location.username}' does not exists")
-    except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Latitude and Longitude should not be null")
-
-    return location_updated
-
-@users_router.get(
-    "/get_nearby_users/{latitude}/{longitude}",
-    response_model=List[dict],
-    description="Get nearby users",
-    summary="Get nearby users"
-)
-async def get_nearby_users(
-    latitude = Path(...),
-    longitude = Path(...)
-):
-    nearby_users = await LocationService.get_nearby_users(
-        latitude=float(latitude),
-        longitude=float(longitude)
-    )    
-    return nearby_users
+async def update_user(userData: dict, email: str = Path(...)):
+    return await UserService.update_user(email, userData) 
