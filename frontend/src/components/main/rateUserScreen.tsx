@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
-import { UserAPI, ConversationAPI } from '@/utils/api';
+import { UserAPI, ConversationAPI } from '@/src/utils/api';
 import LoadingScreen from '../utils/loadingScreen';
-import { Score } from '@/models/scores';
-import { useAuth } from '@/hooks/useAuth';
+import { Score } from '@/src/models/scores';
+import { useAuth } from '@/src/hooks/useAuth';
 
 const RateUserScreen = ({ route }) => {
   const [rating, setScore] = useState(0);
@@ -14,7 +14,7 @@ const RateUserScreen = ({ route }) => {
   const [isFetchingInfosLoading, setIsFetchingInfosLoading] = useState(false);
   const [isAddingScoreLoading, setIsAddingScoreLoading] = useState(false);
   const { navigation, infos } = route.params
-  const { user } = useAuth();
+  const { actualUser } = useAuth();
 
   const calculateAverage = (numbers: number[]): number => {
     if (numbers.length === 0) {
@@ -33,7 +33,7 @@ const RateUserScreen = ({ route }) => {
   }
 
   const getRaterScoring = (scoresList: Score[]): number => {
-    const raterScore = scoresList.filter((score) => score.rated_by == user.username);
+    const raterScore = scoresList.filter((score) => score.rated_by == actualUser.username);
     if (raterScore.length > 0) {
       return raterScore[0].score
     }
@@ -48,7 +48,7 @@ const RateUserScreen = ({ route }) => {
   const handleSendDisable = () => {
     if (!isSendDisabled) {
       const data = {
-        rated_by: user.username,
+        rated_by: actualUser.username,
         rated_to: infos.username,
         score: rating
       };
@@ -135,7 +135,7 @@ const RateUserScreen = ({ route }) => {
   }, [])
 
   const loadConversation = () => {
-    ConversationAPI.getConversation(user.username, infos.username)
+    ConversationAPI.getConversation(actualUser.username, infos.username)
     .then((data) => {
       navigation.navigate("messaging", {
         navigation: navigation,
@@ -146,7 +146,7 @@ const RateUserScreen = ({ route }) => {
     })
     .catch((error) => {
       const data = {
-        initiator_username: user.username,
+        initiator_username: actualUser.username,
         recipient_username: infos.username
       }
       ConversationAPI.createNewConversation(data)

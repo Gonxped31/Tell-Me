@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavBar from '../utils/navBar';
-import { useAuth } from '@/hooks/useAuth';
-import { validateInputs } from '@/constants/functions';
-import { UserAPI } from '@/utils/api';
+import { useAuth } from '@/src/hooks/useAuth';
+import { validateInputs } from '@/src/constants/functions';
+import { UserAPI } from '@/src/utils/api';
 import Toast from 'react-native-toast-message';
 
 const Profile = ({ navigation }) => {
@@ -18,7 +18,7 @@ const Profile = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const { user } = useAuth();
+  const { actualUser } = useAuth();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible);
@@ -55,8 +55,8 @@ const Profile = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setUsername(user.username);
-    setEmail(user.email);
+    setUsername(actualUser.username);
+    setEmail(actualUser.email);
   }, [])
 
   return (

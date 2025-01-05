@@ -9,18 +9,18 @@ const NavBar = ({ navigation }) => {
     const buttonSize = 25
     return (
         <View style={styles.bottomNav}>
-            <TouchableOpacity onPress={() => navigation.navigate("home")}>
-                <Icon name="home-outline" size={buttonSize} color="#FF007F" />
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("profile")}>
                 <Icon name="person-outline" size={buttonSize} color="#FF007F" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("home")}>
+                <Icon name="home-outline" size={buttonSize} color="#FF007F" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("conversations")}>
                 <Icon name="chatbubble-outline" size={buttonSize} color="#FF007F" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("settings")}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate("settings")}>
                 <Icon name="settings-outline" size={buttonSize} color="#FF007F" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     )
 }

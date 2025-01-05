@@ -1,5 +1,5 @@
-import { API_ENDPOINT } from "@/constants/variables";
-import authenticatedRequest from "@/helpers/authenticatedRequest";
+import { API_ENDPOINT } from "@/src/constants/variables";
+import authenticatedRequest from "@/src/helpers/authenticatedRequest";
 
 const testing = false;
 

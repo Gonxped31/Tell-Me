@@ -9,17 +9,17 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotFound from '../utils/notFound';
-import { ConversationAPI } from '@/utils/api';
-import { useAuth } from '@/hooks/useAuth';
+import { ConversationAPI } from '@/src/utils/api';
+import { useAuth } from '@/src/hooks/useAuth';
 
 const Conversations = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { actualUser } = useAuth();
 
   useEffect(() => {
-    ConversationAPI.getConversations(user.username, setLoading)
+    ConversationAPI.getConversations(actualUser.username, setLoading)
     .then((data) => {
       setConversations(data);
     })
@@ -44,7 +44,7 @@ const Conversations = ({ navigation }) => {
     <TouchableOpacity style={styles.conversation}
       onPress={() => navigation.navigate("messaging", {
         navigation: navigation,
-        receiverUsername: item.recipient_username == user.username ? item.initiator_username : item.recipient_username,
+        receiverUsername: item.recipient_username == actualUser.username ? item.initiator_username : item.recipient_username,
         conv_id: item.conv_id,
         isAnonymous: item.is_anonymous
       })}
@@ -54,7 +54,7 @@ const Conversations = ({ navigation }) => {
         <View>
           {item.is_anonymous ? <Text style={styles.userName}>Anonymous</Text> : 
           <Text style={styles.userName}>{
-            item.recipient_username == user.username ? item.initiator_username : item.recipient_username}
+            item.recipient_username == actualUser.username ? item.initiator_username : item.recipient_username}
           </Text>}
 
           {/* <Text style={styles.lastMessage}>{item.created_at}</Text> */}

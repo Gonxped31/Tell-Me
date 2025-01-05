@@ -11,9 +11,9 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavBar from '../utils/navBar';
 import LoadingScreen from '../utils/loadingScreen';
-import { UserAPI } from '@/utils/api';
-import useLocation from '@/hooks/useLocation';
-import { useAuth } from '@/hooks/useAuth';
+import { UserAPI } from '@/src/utils/api';
+import useLocation from '@/src/hooks/useLocation';
+import { useAuth } from '@/src/hooks/useAuth';
 import Toast from 'react-native-toast-message';
 
 const MainView = ({ navigation }) => {
@@ -25,7 +25,7 @@ const MainView = ({ navigation }) => {
     timeInterval: 10000, // Update every 10 seconds
     distanceInterval: 5,  // Update every 5 meters
   });
-  const { logout, user } = useAuth();
+  const { logout, actualUser } = useAuth();
 
   useEffect(() => {
     if (location.latitude === null || location.longitude === null) {
@@ -33,7 +33,7 @@ const MainView = ({ navigation }) => {
     }
 
     const input = {
-      username: user.username,
+      username: actualUser.username,
       latitude: `${location.latitude}`,
       longitude: `${location.longitude}`
     }
@@ -42,8 +42,7 @@ const MainView = ({ navigation }) => {
     .then((data) => {
       UserAPI.getNearbyUsers(input.latitude, input.longitude, setIsFindingUser).then(
         (data) =>{
-          console.log(data);
-          const validData = data.filter((fetcheduser) => fetcheduser.username != user.username)
+          const validData = data.filter((fetcheduser) => fetcheduser.username != actualUser.username)
           setUsers(validData);
         }
       ).catch((error) => {
@@ -71,7 +70,7 @@ const MainView = ({ navigation }) => {
   );
 
   const filteredUsers = users.length > 0 ? users.filter((user) =>
-    user.username.toLowerCase().includes(search.toLowerCase())
+    actualUser.username.toLowerCase().includes(search.toLowerCase())
   ) : [];
 
   const handleSignOut = () => {
@@ -135,7 +134,7 @@ const loadingStyle = {
     marginTop: -200,
   },
   loader: {
-    marginTop: -10, // Move the loader 30 pixels higher,
+    marginTop: -10,
     with: 50,
     
   },

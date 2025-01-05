@@ -1,8 +1,8 @@
 import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 import { User, UserShort } from '../models/user'
-import { Score } from '@/models/scores';
-import { Conversation } from '@/models/conversation';
-import { Message } from '@/models/message';
+import { Score } from '@/src/models/scores';
+import { Conversation } from '@/src/models/conversation';
+import { Message } from '@/src/models/message';
 import { postData, fetchData, authTokens, putData, deleteData } from './dbfunctions';
 
 export const UserAPI = {
@@ -15,13 +15,11 @@ export const UserAPI = {
     /** Location */
     updateLocation: async function (data, setLoading = null, cancel = null) {
         const result = await postData(`/update_user_location`, data, setLoading);
-        console.log(result);
         return result;
     },
 
     getNearbyUsers: async function (latitude: Float, longitude: Float, setLoading = null, cancel = false) {
         const result = await fetchData(`/get_nearby_users/${latitude}/${longitude}`, setLoading);
-        console.log(result)
         return result.map((user) => new UserShort(user));
     },
 

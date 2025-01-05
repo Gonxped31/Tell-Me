@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import Icon from 'react-native-vector-icons/Ionicons';
 import LoadingScreen from '../utils/loadingScreen';
 import Toast from 'react-native-toast-message';
-import { UserAPI } from '@/utils/api';
+import { UserAPI } from '@/src/utils/api';
 
 const PasswordRecovery = ({ route }) => {
   const [code, setCode] = useState(['', '', '', '']); // Code à 4 chiffres

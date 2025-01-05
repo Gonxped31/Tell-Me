@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
 import LoadingScreen from '../utils/loadingScreen';
 import Toast from 'react-native-toast-message';
-import { UserAPI } from '@/utils/api';
+import { UserAPI } from '@/src/utils/api';
 
 const ResetPassword = ({ route }) => {
     const [newPassword, setNewPassword] = useState('');

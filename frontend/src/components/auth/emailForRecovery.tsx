@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import LoadingScreen from "../utils/loadingScreen";
-import { UserAPI } from "@/utils/api";
+import { UserAPI } from "@/src/utils/api";
 import Toast from "react-native-toast-message";
 
 const EmailForRecovery = ({ navigation }) => {

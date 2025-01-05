@@ -3,8 +3,8 @@ import * as Location from 'expo-location';
 
 const useLocation = (options = {}) => {
   const [location, setLocation] = useState({
-    latitude: null, //45.4877,
-    longitude: null //-75.2540,
+    latitude: null,
+    longitude: null
   });
   const [locationStatus, setLocationStatus] = useState('');
   const [error, setError] = useState(null);

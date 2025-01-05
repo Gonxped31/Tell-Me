@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from "react-native";
 import LoadingScreen from '../utils/loadingScreen';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/src/hooks/useAuth';
 import Toast from 'react-native-toast-message';
 
 const Login = ({ navigation }) => {

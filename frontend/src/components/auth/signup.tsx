@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { authAPI } from '@/utils/api';
-import { useAuth } from '@/hooks/useAuth';
+import { authAPI } from '@/src/utils/api';
 
 const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState('');
