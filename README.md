@@ -1,4 +1,4 @@
-# Anonymous Messaging and Social Scoring mobile App
+# Social Scoring and Messaging mobile App
 
 ## Objective
 The primary objective of this project is to create a platform that enables individuals to interact with strangers they encounter in real life without the need for direct, in-person communication. The app aims to facilitate casual, anonymous conversations and introduce a unique "social score" feature to promote engagement.
