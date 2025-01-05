@@ -1,7 +1,11 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Boolean
+)
 from sqlalchemy.orm import relationship
-from geoalchemy2 import Geography
-from datetime import datetime, timezone
 from app.base import Base
 
 class User(Base):
@@ -14,32 +18,27 @@ class User(Base):
 
     location = relationship("Location", back_populates="user")
     score = relationship("Score", back_populates="user")
+    settings = relationship("UserSettings", back_populates="user", uselist=False)
+    initiated_conversations = relationship("Conversation", foreign_keys="[Conversation.initiator_username]", back_populates="initiator")
+    received_conversations = relationship("Conversation", foreign_keys="[Conversation.recipient_username]", back_populates="recipient")
+    notification = relationship("Notifications", back_populates="user")
 
     def __repr__(self):
-        return f"User({self.id}, {self.username}, {self.email}, {self.password})"
-    
-class Score(Base):
-    __tablename__= "scores"
+        return f"User({self.username},"\
+            " email={self.email},"\
+            " password={self.password})"
+
+class UserSettings(Base):
+    __tablename__ = "user_settings"
 
     id = Column(Integer, primary_key=True)
-    rated_by = Column(String, nullable=False)
-    rated_to = Column(String, ForeignKey("users.username"), nullable=False, onupdate="CASCADE")
-    score = Column(Integer, nullable=False)
+    username = Column(String, ForeignKey("users.username"), nullable=False, unique=True)
+    allow_anonymous = Column(Boolean, default=False)
+    auto_delete_days = Column(Integer, default=7)
 
-    user = relationship("User", back_populates="score")
-
-    def __repr__(self):
-        return f"Score({self.id}, {self.rated_by}, {self.rated_to}, {self.score})"
-
-class Location(Base):
-    __tablename__= "locations"
-
-    id = Column(Integer, primary_key=True)
-    username = Column(String, ForeignKey("users.username"), nullable=False, onupdate="CASCADE")
-    location = Column(Geography(geometry_type="POINT", srid=4326), nullable=False)
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
-
-    user = relationship("User", back_populates="location")
+    user = relationship("User", back_populates="settings")
 
     def __repr__(self):
-        return f"User({self.id}, {self.username}, {self.location}, {self.updated_at})"
+        return f"UserSettings({self.username},"\
+            " {self.allow_anonymous},"\
+            " {self.auto_delete_days})"

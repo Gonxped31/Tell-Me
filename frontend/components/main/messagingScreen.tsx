@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,44 +10,46 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EmojiSelector from 'react-native-emoji-selector';
+import { MessageAPI, ConversationAPI } from '@/utils/api';
+import LoadingScreen from '../utils/loadingScreen';
+import { Message } from '@/models/message';
+import { useAuth } from '@/hooks/useAuth';
+import Toast from 'react-native-toast-message';
+import { API_ENDPOINT } from '@/constants/variables';
+import { io } from 'socket.io-client';
 
 const MessagingScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isEmojiVisible, setIsEmojiVisible] = useState(false);
-  const { navigation, receiverUsername } = route.params
+  const [loading, setLoading] = useState(false);
+  const { navigation, receiverUsername, conv_id, isAnonymous } = route.params
+  const { user, access_token } = useAuth();
+
 
   const sendMessage = () => {
-    if (newMessage.trim()) {
-      // Add the user's message to the list
-      const userMessage = { id: Date.now().toString(), text: newMessage, sender: 'self' };
-      setMessages((prevMessages) => [userMessage, ...prevMessages]);
-      setNewMessage('');
-
-      // Simulate an automatic response after a delay
-      setTimeout(() => sendAutoResponse(), 1500);
+    if (newMessage.trim() !== "") {
+      const data = {
+        conversation_id: conv_id,
+        sender_username: user.username,
+        content: newMessage
+      };
+      
+      MessageAPI.addNewMessage(data)
+      .then((data) => {
+        const userMessage = { id: Date.now().toString(), text: newMessage, sender: 'self' };
+        setMessages((prevMessages) => [userMessage, ...prevMessages]);
+        setNewMessage('');
+      })
+      .catch((error) => {
+        console.error('An error occured', error);
+        Toast.show({
+          type: 'error',
+          text1: 'An error occured',
+          text2: 'Message not sent'
+        })
+      });
     }
-  };
-
-  const sendAutoResponse = () => {
-    const fakeResponses = [
-      "That's so kind of you!",
-      "Really? Tell me more!",
-      "Haha, you're funny!",
-      "I completely agree!",
-      "Thanks for sharing that!",
-    ];
-
-    const randomResponse =
-      fakeResponses[Math.floor(Math.random() * fakeResponses.length)];
-
-    const botMessage = {
-      id: Date.now().toString(),
-      text: randomResponse,
-      sender: 'other',
-    };
-
-    setMessages((prevMessages) => [botMessage, ...prevMessages]);
   };
 
   const renderMessage = ({ item }) => (
@@ -61,24 +63,48 @@ const MessagingScreen = ({ route }) => {
     </View>
   );
 
+  const splitMessages = (messages: Message[]) => {
+    return messages.map((message) => {
+      return (
+      {
+        id: message.message_id,
+        text: message.content,
+        sender: message.sender_username == receiverUsername ? 'other' : 'self'
+      })
+    })
+  }
+
+  useEffect(() => {
+    MessageAPI.getMessages(conv_id, setLoading)
+    .then((data) => {
+      const splittedMessages = splitMessages(data);
+      setMessages(splittedMessages);
+    })
+    .catch((error) => {
+      console.error('An error occured', error);
+    });
+
+    MessageAPI.markMessagesAsRead(conv_id, user.username);
+  }, [])
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.profileContainer}>
           <Icon name="person-circle-outline" size={40} color="#FF007F" />
-          <Text style={styles.userName}>{receiverUsername}</Text>
+          <Text style={styles.userName}>{isAnonymous ? 'Anonymous' : receiverUsername}</Text>
         </View>
       </View>
 
       {/* Messages */}
-      <FlatList
+      {loading ? <LoadingScreen message={"Loading messages"} /> : <FlatList
         data={messages}
         renderItem={renderMessage}
         keyExtractor={(item) => item.id}
         style={styles.messageList}
         inverted
-      />
+      />}
 
       <Modal
         visible={isEmojiVisible}

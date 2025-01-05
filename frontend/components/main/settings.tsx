@@ -35,7 +35,7 @@ const Settings = ({ navigation }) => {
         </View>
 
         {/* Delete Messages Setting */}
-        <View style={styles.settingContainer}>
+        {/* <View style={styles.settingContainer}>
           <Text style={styles.settingText}>{"Delete messages\nafter 2 days"}</Text>
           <Switch
             value={deleteMessages}
@@ -43,7 +43,7 @@ const Settings = ({ navigation }) => {
             trackColor={{ false: '#555', true: '#FF007F' }}
             thumbColor={deleteMessages ? '#FFF' : '#FFF'}
           />
-        </View>
+        </View> */}
       </ScrollView>
 
       {/* <NavBar /> */}

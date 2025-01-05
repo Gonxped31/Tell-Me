@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
-import { UserAPI } from '@/utils/api';
+import { UserAPI, ConversationAPI } from '@/utils/api';
 import LoadingScreen from '../utils/loadingScreen';
 import { Score } from '@/models/scores';
 import { useAuth } from '@/hooks/useAuth';
@@ -134,6 +134,34 @@ const RateUserScreen = ({ route }) => {
     })
   }, [])
 
+  const loadConversation = () => {
+    ConversationAPI.getConversation(user.username, infos.username)
+    .then((data) => {
+      navigation.navigate("messaging", {
+        navigation: navigation,
+        receiverUsername: infos.username,
+        conv_id: data.conv_id,
+        isAnonymous: data.is_anonymous
+      });
+    })
+    .catch((error) => {
+      const data = {
+        initiator_username: user.username,
+        recipient_username: infos.username
+      }
+      ConversationAPI.createNewConversation(data)
+      .then((data) => {
+        navigation.navigate("messaging", {
+          navigation: navigation,
+          receiverUsername: infos.username,
+          conv_id: data.conv_id,
+          isAnonymous: data.is_anonymous
+        });
+      });
+      // console.error('An error occured', error);
+    });
+  }
+
   return (
     isFetchingInfosLoading ? <LoadingScreen message={"Fetching user info..."}/> : 
     <View style={styles.container}>
@@ -186,10 +214,7 @@ const RateUserScreen = ({ route }) => {
 
       {/* Private Message Button */}
       <TouchableOpacity style={styles.messageButton}
-        onPress={() => navigation.navigate("messaging", {
-          navigation: navigation,
-          receiverUsername: infos.name
-        })}
+        onPress={loadConversation}
       >
         <Text style={styles.messageButtonText}>Private message</Text>
       </TouchableOpacity>

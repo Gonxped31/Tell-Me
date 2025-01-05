@@ -46,8 +46,7 @@ export const AuthProvider = ({ children }) => {
   // Login Function
   const login = async (username: string, password: string, setLoading = null) => {
     try {
-      const data = await authAPI.login({ username: username, password: password }, setLoading); // Send login request
-      console.log(typeof(data));
+      const data = await authAPI.login({ username: username, password: password }, setLoading);
       await AsyncStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
       await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
       await AsyncStorage.setItem(USER_KEY, JSON.stringify(data.user));
@@ -68,7 +67,7 @@ export const AuthProvider = ({ children }) => {
       return response.data;
     } catch (error) {
       console.error(error.message)
-      return null;
+      throw error
     }
   };
 
@@ -92,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     user: user,
     isAuthenticated: isAuthenticated,
     loading: loading,
+    access_token: access_token,
     login: login,
     logout: logout,
   }

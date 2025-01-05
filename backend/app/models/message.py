@@ -3,23 +3,33 @@ from sqlalchemy import (
     Column, 
     ForeignKey, 
     String, 
-    TIMESTAMP, 
     Integer, 
     Boolean,
     DateTime,
+    Text,
     func
 )
+from sqlalchemy.orm import relationship
+import uuid
 
 class Message(Base):
-    __tablename__="messages"
+    __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True)
-    sender_id = Column(Integer, ForeignKey("users.id"))
-    conversation_id = Column(Integer, ForeignKey("conversations.id"))
-    message_line = Column(String, nullable=False)
-    created_at = Column(TIMESTAMP, default=func.now())
+    message_id = Column(String, nullable=False, unique=True, default=lambda: str(uuid.uuid4()))
+    conversation_id = Column(String, ForeignKey("conversations.conv_id"), nullable=False)
+    sender_username = Column(String, ForeignKey("users.username"), nullable=False)
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=func.now())
     is_read = Column(Boolean, default=False)
-    deleted_at = Column(DateTime, nullable=True)
+
+    conversation = relationship("Conversation", back_populates="messages")
+    sender = relationship("User", foreign_keys=[sender_username])
 
     def __repr__(self):
-        return f"Message({self.id}, {self.sender_id}, {self.conversation_id}, {self.message_line}, {self.created_at}, {self.is_read}, {self.deleted_at})"
+        return f"Message(message_id={self.message_id},"\
+            " conversation_id={self.conversation_id},"\
+            " sender_username={self.sender_username},"\
+            " content={self.content}"\
+            " created_at={self.created_at}"\
+            " is_read={self.is_read})"

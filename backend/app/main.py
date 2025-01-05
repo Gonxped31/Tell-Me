@@ -9,9 +9,13 @@ from app.core.config import settings
 from app.base import Base
 
 # Models import (necessary for SQLAlchemy even if they are not used)
-from app.models.user import User
+from app.models.user import User, UserSettings
 from app.models.conversation import Conversation
 from app.models.message import Message
+from app.models.location import Location
+from app.models.ratings import Score
+from app.models.notifications import Notifications
+
 
 load_dotenv()
 

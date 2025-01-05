@@ -34,7 +34,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         "/auth/verify_token",
         summary="Test if the access token is valid",
         response_model=UserSchema,
-        )
+    )
 async def verify_user_token(user: User = Depends(verify_token)):
     return user
 

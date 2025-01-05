@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,52 +9,65 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotFound from '../utils/notFound';
+import { ConversationAPI } from '@/utils/api';
+import { useAuth } from '@/hooks/useAuth';
 
 const Conversations = ({ navigation }) => {
   const [search, setSearch] = useState('');
-  const [conversations, setConversations] = useState([
-    { id: '1', name: 'John Doe', lastMessageTime: 'less than 1 day' },
-    { id: '2', name: 'Lebron James', lastMessageTime: '2 weeks ago' },
-    { id: '3', name: 'Alice Johnson', lastMessageTime: '3 hours ago' },
-    { id: '4', name: 'Michael Scott', lastMessageTime: 'yesterday' },
-    { id: '5', name: 'Dwight Schrute', lastMessageTime: '4 days ago' },
-    { id: '6', name: 'Pam Beesly', lastMessageTime: '30 minutes ago' },
-    { id: '7', name: 'Jim Halpert', lastMessageTime: 'just now' },
-    { id: '8', name: 'Angela Martin', lastMessageTime: '1 week ago' },
-    { id: '9', name: 'Kevin Malone', lastMessageTime: '2 days ago' },
-    { id: '10', name: 'Oscar Martinez', lastMessageTime: '5 hours ago' },
-    { id: '11', name: 'Kelly Kapoor', lastMessageTime: '10 minutes ago' },
-    { id: '12', name: 'Ryan Howard', lastMessageTime: '6 days ago' },
-  ]);
+  const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    ConversationAPI.getConversations(user.username, setLoading)
+    .then((data) => {
+      setConversations(data);
+    })
+    .catch((error) => {
+      console.error('An error occured', error);
+    })
+  }, []);
 
   const deleteConversation = (id) => {
-    setConversations((prevConversations) =>
-      prevConversations.filter((conversation) => conversation.id !== id)
-    );
+    ConversationAPI.deleteConversation(id)
+    .then((data) => {
+      setConversations((prevConversations) =>
+        prevConversations.filter((conversation) => conversation.conv_id !== id)
+      );
+    })
+    .catch((error) => {
+      console.error('An error occured', error);
+    })
   };
 
   const renderConversation = ({ item }) => (
     <TouchableOpacity style={styles.conversation}
       onPress={() => navigation.navigate("messaging", {
         navigation: navigation,
-        receiverUsername: item.name
+        receiverUsername: item.recipient_username == user.username ? item.initiator_username : item.recipient_username,
+        conv_id: item.conv_id,
+        isAnonymous: item.is_anonymous
       })}
     >
       <View style={styles.conversationInfo}>
         <Icon name="chatbubble-outline" size={25} color="#FFF" style={styles.chatIcon} />
         <View>
-          <Text style={styles.userName}>{item.name}</Text>
-          <Text style={styles.lastMessage}>{item.lastMessageTime}</Text>
+          {item.is_anonymous ? <Text style={styles.userName}>Anonymous</Text> : 
+          <Text style={styles.userName}>{
+            item.recipient_username == user.username ? item.initiator_username : item.recipient_username}
+          </Text>}
+
+          {/* <Text style={styles.lastMessage}>{item.created_at}</Text> */}
         </View>
       </View>
-      <TouchableOpacity onPress={() => deleteConversation(item.id)}>
+      <TouchableOpacity onPress={() => deleteConversation(item.conv_id)}>
         <Icon name="trash-outline" size={25} color="#FF007F" />
       </TouchableOpacity>
     </TouchableOpacity>
   );
 
   const filterdConversations = conversations.filter(
-    (conv) => conv.name.toLowerCase().includes(search.toLowerCase())
+    (conv) => conv.recipient_username.toLowerCase().includes(search.toLowerCase())
   );
 
   return (

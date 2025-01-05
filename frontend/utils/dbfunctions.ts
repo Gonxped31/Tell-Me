@@ -1,4 +1,5 @@
 import { API_ENDPOINT } from "@/constants/variables";
+import authenticatedRequest from "@/helpers/authenticatedRequest";
 
 const testing = false;
 
@@ -55,19 +56,10 @@ export async function fetchData(url, setLoading = null) {
     }
 
     try {
-        console.log(buildUrl(url));
-        const response = await fetch(buildUrl(url));
-
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-
-        const responseData = await response.json();
-
-        return responseData;
+        const response = await authenticatedRequest.get(url);
+        return response.data;
     } catch (error) {
         console.error('Error fetching data:', error);
-        throw error; // Propagate the error to the caller
     } finally {
         if (setLoading) {
             setLoading(false);
@@ -80,25 +72,11 @@ export async function postData(url, data, setLoading = null) {
         setLoading(true);
     }
 
-    try {
-        const response = await fetch(buildUrl(url), {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-
-        const responseData = await response.json();
-
-        return responseData;
+    try{
+        const response = await authenticatedRequest.post(url, data);
+        return response.data;
     } catch (error) {
-        console.error('Error posting data:', error);
-        throw error; // Propagate the error to the caller
+        console.error('Error fetching data:', error);
     } finally {
         if (setLoading) {
             setLoading(false);
@@ -111,21 +89,11 @@ export async function deleteData(url, setLoading = null) {
         setLoading(true);
     }
 
-    try {
-        const response = await fetch(buildUrl(url), {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-
-        const responseData = await response.json();
-
-        return responseData;
+    try{
+        const response = await authenticatedRequest.delete(url);
+        return response.data;
     } catch (error) {
-        console.error('Error posting data:', error);
-        throw error; // Propagate the error to the caller
+        console.error('Error fetching data:', error);
     } finally {
         if (setLoading) {
             setLoading(false);
@@ -137,26 +105,12 @@ export async function putData(url, data, setLoading = null) {
     if (setLoading) {
         setLoading(true);
     }
-
-    try {
-        const response = await fetch(buildUrl(url), {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-
-        const responseData = await response.json();
-
-        return responseData;
+    
+    try{
+        const response = await authenticatedRequest.put(url, data);
+        return response.data;
     } catch (error) {
-        console.error('Error posting data:', error);
-        throw error; // Propagate the error to the caller
+        console.error('Error fetching data:', error);
     } finally {
         if (setLoading) {
             setLoading(false);

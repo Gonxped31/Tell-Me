@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Path, status, HTTPException
+from fastapi import APIRouter, Path, status, HTTPException, Depends
 from app.schemas.geography_schema import LocationSchema
 from app.services.location_service import LocationService
+from app.api.deps.user_deps import verify_token
 from typing import List, Dict
 
 location_router = APIRouter()
@@ -11,7 +12,10 @@ location_router = APIRouter()
     description="Update user location",
     summary="Update user location"
 )
-async def update_user_location(location: LocationSchema):
+async def update_user_location(
+    location: LocationSchema,
+    _ = Depends(verify_token)
+):
     try:
         if location.latitude == None or location.longitude == None:
             raise ValueError("Latitude and Longitude should not be null")
@@ -36,7 +40,8 @@ async def update_user_location(location: LocationSchema):
 )
 async def get_nearby_users(
     latitude = Path(...),
-    longitude = Path(...)
+    longitude = Path(...),
+    _ = Depends(verify_token)
 ):
     nearby_users = await LocationService.get_nearby_users(
         latitude=float(latitude),

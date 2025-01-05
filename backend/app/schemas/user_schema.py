@@ -22,6 +22,13 @@ class UserCreate(BaseModel):
     email: str
     password: str = Field(...)
 
+    class Config:
+        orm_mode = True
+
+class UserSettingOut(BaseModel):
+    username: str = Field(..., description="Username of the user")
+    allow_anonymous: bool = Field(..., description="Indicates whether the user allows sending messages anonymously")
+    auto_delete_days: int = Field(..., description="Number of days after which conversations are automatically deleted")
 
     class Config:
         orm_mode = True

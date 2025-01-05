@@ -1,5 +1,5 @@
 from app.models.user import User
-from app.schemas.user_schema import UserSchema
+from app.schemas.user_schema import UserUpdate
 from fastapi import HTTPException, status
 from fastapi_sqlalchemy import db
 from app.core.security import get_hased_password, verify_password
@@ -113,16 +113,19 @@ class UserService:
         return await UserService.send_verification_code_email(email, reset_code)
 
     @staticmethod
-    async def update_user(email: str, userData: UserSchema) -> User:
+    async def update_user(email: str, userData: UserUpdate) -> User:
         user = await UserService.get_user_by_email(email=email)
         if not user:
             raise HTTPException(status_code=404, detail=f"User with this email: ${email} already doesn't exist")
         
-        for key, value in userData.items():
-            if hasattr(user, key):  # Check if the attribute exists
+        data_dict = userData.model_dump(exclude_unset=True)
+
+        for key, value in data_dict.items():
+            if hasattr(user, key):
                 setattr(user, key, value)
             else:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Field {key} does not exist")
             
         db.session.commit()
+        db.session.refresh(user)
         return user

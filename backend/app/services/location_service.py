@@ -1,11 +1,11 @@
-from app.models.user import Location
+from app.models.location import Location
 from fastapi_sqlalchemy import db
 from geoalchemy2.functions import ST_DWithin, ST_Distance, ST_SetSRID, ST_MakePoint
 from typing import List
 from app.services.user_service import UserService
 
 class LocationService:
-
+    @staticmethod
     async def update_user_location(username: str, latitude: float, longitude: float) -> Location:
 
         user_location = db.session.query(Location).filter(Location.username == username).first()
@@ -27,6 +27,7 @@ class LocationService:
             "updated_at": location.updated_at
         }
 
+    @staticmethod
     async def get_nearby_users(latitude: float, longitude: float, radius: float = 5.0) -> List[dict]:
         point = ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
         query = db.session.query(

@@ -10,13 +10,16 @@ const Login = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [actualUserEmail, setActualUserEmail] = useState("email@gmail.com");
     const [isLoading, setLoading] = useState(false);
-    const { login, isAuthenticated, user } = useAuth();
+    const { login } = useAuth();
 
     const handleLogin = async () => {
       try {
         const success = await login(username, password, setLoading);
         if (success) {
-          navigation.navigate("home");
+          Toast.show({
+            type: 'success',
+            text1: 'Welcome !',
+          });
         } else {
           Toast.show({
             type: 'error',

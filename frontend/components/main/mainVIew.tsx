@@ -81,7 +81,6 @@ const MainView = ({ navigation }) => {
         type: 'info',
         text1: 'Logged out!'
       })
-      navigation.navigate('login');
     }).catch((error) => {
       console.error('Error during log out', error)
       Toast.show({
