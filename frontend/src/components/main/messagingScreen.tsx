@@ -1,4 +1,4 @@
-import React, { act, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -60,7 +60,6 @@ const MessagingScreen = ({ route }) => {
     }
   
     const message = messages[0];
-    console.log("Message:", message);
     const { _id, createdAt, text } = message;
     
     // Add message to Firestore
