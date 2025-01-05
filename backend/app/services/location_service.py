@@ -20,6 +20,7 @@ class LocationService:
 
         db.session.add(location)
         db.session.commit()
+        db.session.refresh(location)
 
         return {
             "username": username,

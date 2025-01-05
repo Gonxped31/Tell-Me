@@ -14,13 +14,11 @@ class Location(Base):
     __tablename__= "locations"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String, ForeignKey("users.username"), nullable=False, onupdate="CASCADE")
+    username = Column(String, nullable=False)
     location = Column(Geography(geometry_type="POINT", srid=4326), nullable=False)
     updated_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
 
-    user = relationship("User", back_populates="location")
+    # user = relationship("User", back_populates="location")
 
     def __repr__(self):
-        return f"User(username={self.username},"\
-            " location={self.location},"\
-            " updated_at={self.updated_at})"
+        return f"User(username={self.username}, location={self.location}, updated_at={self.updated_at})"

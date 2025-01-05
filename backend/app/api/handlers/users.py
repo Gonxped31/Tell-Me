@@ -40,15 +40,16 @@ async def delete_user(
 
 @users_router.put(
     "/update_user/{email}",
-    response_model=UserSchema,
-    description="Check if the email exists and send a verification code.",
-    summary="Check if the email exists and send a verification code."
+    description="Update a user",
+    summary="Update a user"
 )
 async def update_user(
     userData: UserUpdate,
     email: str = Path(...),
     _ = Depends(verify_token)
 ):
+    print(userData)
+    print(email)
     return await UserService.update_user(email, userData) 
 
 @users_router.post(

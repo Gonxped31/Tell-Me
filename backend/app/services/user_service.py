@@ -1,4 +1,8 @@
 from app.models.user import User
+from app.models.location import Location
+from app.models.ratings import Score
+from app.models.notifications import Notifications
+from app.models.conversation import Conversation
 from app.schemas.user_schema import UserUpdate
 from fastapi import HTTPException, status
 from fastapi_sqlalchemy import db
@@ -9,6 +13,7 @@ from email.mime.text import MIMEText
 import redis
 import os
 import secrets
+from sqlalchemy import or_
 from typing import Dict
 
 # Configurations
@@ -37,7 +42,7 @@ class UserService:
             User: the user object saved in database.
         """
         password = get_hased_password(password)
-        user = User(username=username, email=email, password=password, average_rate=0)
+        user = User(username=username, email=email, password=password)
         db.session.add(user)
         db.session.commit()
         return user
@@ -114,11 +119,20 @@ class UserService:
 
     @staticmethod
     async def update_user(email: str, userData: UserUpdate) -> User:
-        user = await UserService.get_user_by_email(email=email)
+        print("back email", email)
+        print("back userData", userData)
+        user = await UserService.get_user_by_email(email)
         if not user:
-            raise HTTPException(status_code=404, detail=f"User with this email: ${email} already doesn't exist")
+            raise HTTPException(status_code=404, detail=f"User with this email: {email} doesn't exist")
+        
+        old_username = user.username
+
+        print('back user', user)
         
         data_dict = userData.model_dump(exclude_unset=True)
+
+        if "password" in data_dict:
+            data_dict["password"] = get_hased_password(data_dict["password"])
 
         for key, value in data_dict.items():
             if hasattr(user, key):
@@ -126,6 +140,41 @@ class UserService:
             else:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Field {key} does not exist")
             
+        if "username" in data_dict:
+            new_username = data_dict["username"]
+
+            print('old_username=', old_username)
+            print('new_username=', new_username)
+
+            db.session.query(Location)\
+                .filter(Location.username == old_username)\
+                .update({"username": new_username})
+
+            db.session.query(Score)\
+                .filter(Score.rated_to == old_username)\
+                .update({"rated_to": new_username})
+            
+            db.session.query(Score)\
+                .filter(Score.rated_by == old_username)\
+                .update({"rated_by": new_username})
+            
+            db.session.query(Conversation)\
+                .filter(Conversation.initiator_username == old_username)\
+                .update({"initiator_username": new_username})
+            
+            db.session.query(Conversation)\
+                .filter(Conversation.recipient_username == old_username)\
+                .update({"recipient_username": new_username})
+            
+            updated_convs = db.session.query(Conversation)\
+                .filter(or_(
+                    Conversation.initiator_username == new_username,
+                    Conversation.recipient_username == new_username
+                )).all()
+            
+        print('updated user', user)
         db.session.commit()
-        db.session.refresh(user)
-        return user
+        return {
+            "user": user,
+            "updated_conversations": list(map(lambda conv: conv.conv_id, updated_convs))
+        }

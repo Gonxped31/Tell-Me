@@ -16,6 +16,4 @@ tzdata
 bcrypt
 python-multipart
 jose
-redis
-fastapi-socketio
-python-socketio[asyncio]
+radis
