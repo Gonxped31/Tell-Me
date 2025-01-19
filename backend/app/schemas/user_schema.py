@@ -7,7 +7,7 @@ class UserSchema(BaseModel):
     password: str = Field(..., examples=["password"])
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserUpdate(BaseModel):
     username: Optional[str] = Field(None, examples=["gonxped31"])
@@ -15,7 +15,7 @@ class UserUpdate(BaseModel):
     password: Optional[str] = Field(None, examples=["password"])
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserCreate(BaseModel):
     username: str = Field(...)
@@ -23,7 +23,7 @@ class UserCreate(BaseModel):
     password: str = Field(...)
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserSettingOut(BaseModel):
     username: str = Field(..., description="Username of the user")
@@ -31,4 +31,4 @@ class UserSettingOut(BaseModel):
     auto_delete_days: int = Field(..., description="Number of days after which conversations are automatically deleted")
 
     class Config:
-        orm_mode = True
+        from_attributes = True

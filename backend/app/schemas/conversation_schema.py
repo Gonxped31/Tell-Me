@@ -12,14 +12,14 @@ class ConversationOut(BaseModel):
     recipient_opened: bool = Field(..., description="Indicates wether the conversation has been opened by the recipient")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class ConversationCreate(BaseModel):
     initiator_username: str = Field(..., description="Username of the user who initiated the conversation")
     recipient_username: str = Field(..., description="Username of the recipient of the conversation")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class ConversationUpdate(BaseModel):
     is_anonymous: Optional[bool] = Field(None, description="Indicates whether the conversation is anonymous")
@@ -27,4 +27,4 @@ class ConversationUpdate(BaseModel):
     recipient_opened: Optional[bool] = Field(None, description="Indicates wether the conversation has been opened by the recipient")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
