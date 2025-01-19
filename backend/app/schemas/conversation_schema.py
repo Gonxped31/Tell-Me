@@ -13,6 +13,7 @@ class ConversationOut(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
 
 class ConversationCreate(BaseModel):
     initiator_username: str = Field(..., description="Username of the user who initiated the conversation")
@@ -20,6 +21,7 @@ class ConversationCreate(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
 
 class ConversationUpdate(BaseModel):
     is_anonymous: Optional[bool] = Field(None, description="Indicates whether the conversation is anonymous")
@@ -28,3 +30,4 @@ class ConversationUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"

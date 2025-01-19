@@ -11,6 +11,7 @@ class TokenSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
     
 class TokenPayload(BaseModel):
     sub: str = Field(None, description="Subject of the token.")
@@ -18,3 +19,4 @@ class TokenPayload(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"

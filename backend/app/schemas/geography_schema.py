@@ -6,6 +6,7 @@ class PositionSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
 
 class LocationSchema(BaseModel):
     username: str = Field(...)
@@ -14,3 +15,4 @@ class LocationSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"

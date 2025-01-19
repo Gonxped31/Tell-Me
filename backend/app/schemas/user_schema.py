@@ -8,6 +8,7 @@ class UserSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
 
 class UserUpdate(BaseModel):
     username: Optional[str] = Field(None, examples=["gonxped31"])
@@ -16,6 +17,7 @@ class UserUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
 
 class UserCreate(BaseModel):
     username: str = Field(...)
@@ -24,6 +26,7 @@ class UserCreate(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
 
 class UserSettingOut(BaseModel):
     username: str = Field(..., description="Username of the user")
@@ -32,3 +35,4 @@ class UserSettingOut(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = "allow"
