@@ -11,8 +11,6 @@ class ScoreService:
             Score.rated_to == data.rated_to
         ).first()
 
-        print(data)
-
         if score:
             score.score = data.score
         else:

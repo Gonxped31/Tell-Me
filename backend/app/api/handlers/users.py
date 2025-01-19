@@ -48,8 +48,6 @@ async def update_user(
     email: str = Path(...),
     _ = Depends(verify_token)
 ):
-    print(userData)
-    print(email)
     return await UserService.update_user(email, userData) 
 
 @users_router.post(

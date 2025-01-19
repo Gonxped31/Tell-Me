@@ -34,7 +34,6 @@ async def verify_token(
             headers={"WWW-Authenticate": "Bearer"}
         )
     
-    print(token_data.sub)
     user = await UserService.get_user_by_username(token_data.sub)
     
     if not user:

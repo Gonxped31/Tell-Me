@@ -119,15 +119,11 @@ class UserService:
 
     @staticmethod
     async def update_user(email: str, userData: UserUpdate) -> User:
-        print("back email", email)
-        print("back userData", userData)
         user = await UserService.get_user_by_email(email)
         if not user:
             raise HTTPException(status_code=404, detail=f"User with this email: {email} doesn't exist")
         
         old_username = user.username
-
-        print('back user', user)
         
         data_dict = userData.model_dump(exclude_unset=True)
 
@@ -142,9 +138,6 @@ class UserService:
             
         if "username" in data_dict:
             new_username = data_dict["username"]
-
-            print('old_username=', old_username)
-            print('new_username=', new_username)
 
             db.session.query(Location)\
                 .filter(Location.username == old_username)\
@@ -172,7 +165,6 @@ class UserService:
                     Conversation.recipient_username == new_username
                 )).all()
             
-        print('updated user', user)
         db.session.commit()
         return {
             "user": user,

@@ -2,7 +2,6 @@ from app.models.location import Location
 from fastapi_sqlalchemy import db
 from geoalchemy2.functions import ST_DWithin, ST_Distance, ST_SetSRID, ST_MakePoint
 from typing import List
-from app.services.user_service import UserService
 
 class LocationService:
     @staticmethod
