@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-sqlalchemy = "*"
+psycopg2-binary = "*"
+firebase-admin = "*"
+pytest = "*"
+pytest-flask = "*"
+python-dotenv = "*"
+uuid = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
+
+[scripts]
+start = "start redis-server & uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"

@@ -1,12 +1,15 @@
 # Roadmap for the backend
 ## Infrastructure
-- **Flask** for the service.
+- **Fast API** for the service.
 - **PostgreSQL** for the database.
-- **Firebase** for messages management.
 
 ## Configurations
-- [ ] Configure PostgreSQL for the database side.
-- [ ] Configure Flask for the server side.
+- [X] Configure PostgreSQL for the database side.
+- [X] Configure Fast API for the server side.
+
+1. Exécuter le backend: `pipenv shell`
+2. Installer les dépendances (à faire une seule fois): `pip install -r requirements.txt`
+3. Lancer le serveur: `pipenv run start`
 
 ## Feature and Endpoints (**Need to be updated)
 ### Authentications:
@@ -51,5 +54,39 @@ This section is for the middleware that handle updates between Firebase and post
 
 ## Database schemas
 ### PostgreSQL
+SQL Entities and relationships
+```
+CREATE TABLE User (
+    id INTEGER PRIMARY KEY,
+    username STRING(50) UNIQUE NOT NULL,
+    email STRING(100) NOT NULL,
+    password STRING(100) UNIQUE NOT NULL,
+    average_rate INT
+);
 
-### Firebase
+CREATE TABLE Rating (
+    id SERIAL PRIMARY KEY,
+    rater_id INTEGER REFERENCES User(id),
+    rated_id INTEGER REFERENCES User(id),
+    rate INT NOT NULL
+);
+
+CREATE TABLE Conversation (
+    id UUID PRIMARY KEY,
+    user_1_id INTEGER REFERENCES User(id),
+    user_2_id INTEGER REFERENCES User(id),
+    last_message_id REFERENCES Message(id),
+    last_message TIMESTAMP,
+);
+
+CREATE TABLE Message (
+    id INTEGER PRIMARY KEY,
+    conversation_id INTEGER REFERENCES Conversation(id),
+    sender_id INTEGER REFERENCES User(id),
+    message_line TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    is_read BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP
+);
+
+```
