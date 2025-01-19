@@ -1,7 +1,6 @@
 from app.models.user import User
 from app.models.location import Location
 from app.models.ratings import Score
-from app.models.notifications import Notifications
 from app.models.conversation import Conversation
 from app.schemas.user_schema import UserUpdate
 from fastapi import HTTPException, status

@@ -15,5 +15,5 @@ pytz
 tzdata
 bcrypt
 python-multipart
-jose
-radis
+python-jose
+redis
