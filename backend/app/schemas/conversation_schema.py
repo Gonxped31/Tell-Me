@@ -12,7 +12,6 @@ class ConversationOut(BaseModel):
     recipient_opened: bool = Field(..., description="Indicates wether the conversation has been opened by the recipient")
 
     class Config:
-        from_attributes = True
         extra = "allow"
 
 class ConversationCreate(BaseModel):
@@ -20,7 +19,6 @@ class ConversationCreate(BaseModel):
     recipient_username: str = Field(..., description="Username of the recipient of the conversation")
 
     class Config:
-        from_attributes = True
         extra = "allow"
 
 class ConversationUpdate(BaseModel):
@@ -29,5 +27,4 @@ class ConversationUpdate(BaseModel):
     recipient_opened: Optional[bool] = Field(None, description="Indicates wether the conversation has been opened by the recipient")
 
     class Config:
-        from_attributes = True
         extra = "allow"

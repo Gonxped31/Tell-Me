@@ -6,5 +6,4 @@ class ScoreSchema(BaseModel):
     score: int = Field(...)
 
     class Config:
-        from_attributes = True
         extra = "allow"

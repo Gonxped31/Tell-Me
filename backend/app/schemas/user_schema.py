@@ -7,7 +7,6 @@ class UserSchema(BaseModel):
     password: str = Field(..., examples=["password"])
 
     class Config:
-        from_attributes = True
         extra = "allow"
 
 class UserUpdate(BaseModel):
@@ -16,7 +15,6 @@ class UserUpdate(BaseModel):
     password: Optional[str] = Field(None, examples=["password"])
 
     class Config:
-        from_attributes = True
         extra = "allow"
 
 class UserCreate(BaseModel):
@@ -25,7 +23,6 @@ class UserCreate(BaseModel):
     password: str = Field(...)
 
     class Config:
-        from_attributes = True
         extra = "allow"
 
 class UserSettingOut(BaseModel):
@@ -34,5 +31,4 @@ class UserSettingOut(BaseModel):
     auto_delete_days: int = Field(..., description="Number of days after which conversations are automatically deleted")
 
     class Config:
-        from_attributes = True
         extra = "allow"

@@ -5,7 +5,6 @@ class PositionSchema(BaseModel):
     longitude: str = Field(...)
 
     class Config:
-        from_attributes = True
         extra = "allow"
 
 class LocationSchema(BaseModel):
@@ -14,5 +13,4 @@ class LocationSchema(BaseModel):
     longitude: str = Field(...)
 
     class Config:
-        from_attributes = True
         extra = "allow"

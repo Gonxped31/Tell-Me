@@ -10,7 +10,6 @@ class TokenSchema(BaseModel):
     refresh_token: str = Field(..., description="JWT refresh token to obtain a new access token.")
 
     class Config:
-        from_attributes = True
         extra = "allow"
     
 class TokenPayload(BaseModel):
@@ -18,5 +17,4 @@ class TokenPayload(BaseModel):
     exp: int = Field(None, description="Expiration time of the token.")
 
     class Config:
-        from_attributes = True
         extra = "allow"
