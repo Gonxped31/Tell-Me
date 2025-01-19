@@ -17,7 +17,8 @@ from sqlalchemy import or_
 from typing import Dict
 
 # Configurations
-r = redis.Redis(host=os.getenv("DB_HOST"), port=6379, db=0)
+# r = redis.Redis(host=os.getenv("DB_HOST"), port=6379, db=0)
+r = redis.from_url(os.getenv("REDIS_URL"))
 CODE_EXPIRATION = 300  # 5 minutes (in seconds)
 RATE_LIMIT_PERIOD = 300  # User can request code every 5 minutes (in seconds)
 
