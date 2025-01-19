@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     SMTP_SERVER: str = "smtp.gmail.com"
     SMTP_PORT: str = "587"
     REDIS_PORT: str = "6379"
+    REDIS_URL: str
 
     class Config:
         case_sensitive = True
