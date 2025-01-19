@@ -7,22 +7,65 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import NavBar from '../utils/navBar';
+import LoadingScreen from '../utils/loadingScreen';
 import { useAuth } from '@/src/hooks/useAuth';
 import { validateInputs } from '@/src/constants/functions';
 import { UserAPI } from '@/src/utils/api';
 import Toast from 'react-native-toast-message';
+import { collectionGroup, getDocs, updateDoc, doc } from "firebase/firestore";
+import { database } from "../../../config/firebase";
+import { findAverageScore } from '@/src/constants/functions';
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setLoading] = useState(false);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const { actualUser } = useAuth();
+  const { actualUser, logout } = useAuth();
+  const [ averageScore, setAverageScore ] = useState(0);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible);
   };
+
+
+
+  const updateUserInFirestore = async (oldEmail, newEmail, newName, conversations) => {
+    try {
+      console.log('conversations=', conversations);
+      // Step 1: Use `collectionGroup` to fetch all documents in Firestore where the nested field matches\
+      for (const conversation of conversations) {
+        console.log('conversation=', conversation);
+        const messagesSnapshot = await getDocs(collectionGroup(database, conversation));
+        console.log('messagesSnapshot=', messagesSnapshot.docs);
+
+        if (messagesSnapshot.docs.length === 0) {
+          console.log("No relevant documents found in Firestore.");
+          return;
+        }
+        // Step 2: Iterate through the documents
+        for (const messageDoc of messagesSnapshot.docs) {
+          const messageData = messageDoc.data();
+          // Check if `user._id` matches the old email
+          if (messageData.user?._id === oldEmail) {
+            console.log(`Updating document ID: ${messageDoc.id} in collection`);
+
+            // Step 3: Update the document with new data
+            await updateDoc(doc(database, messageDoc.ref.path), {
+              "user._id": newEmail,
+              "user.name": newName,
+            });
+          }
+        }
+      }
+
+      console.log("All relevant documents updated successfully!");
+    } catch (error) {
+      console.error("An error occurred while updating Firestore:", error);
+    }
+  };
+
 
   const handleSave = () => { 
     if (validateInputs(username, email, password)) {
@@ -36,34 +79,61 @@ const Profile = ({ navigation }) => {
         password: password
       };
 
-      Toast.show({
-        type: 'success',
-        text1: 'Profile updated.'
-      });
+      console.log('email' ,actualUser.email);
 
-      // UserAPI.updateUser(user.email, data)
-      // .then((_) => {
-      //   Toast.show({
-      //     type: 'success',
-      //     text1: 'Profile updated.'
-      //   });
-      // })
-      // .catch((error) => {
-      //   console.error('An error occured',error);
-      // });
+      UserAPI.updateUser(actualUser.email, data, setLoading)
+      .then((response) => {
+        Toast.show({
+          type: 'success',
+          text1: 'Logged out.'
+        });
+        if ('username' in data || 'email' in data) {
+          updateUserInFirestore(actualUser.email, email, username, response.updated_conversations);
+        }
+        logout();
+      })
+      .catch((error) => {
+        console.error('An error occured',error);
+      });
     }
   };
 
   useEffect(() => {
     setUsername(actualUser.username);
     setEmail(actualUser.email);
+
+    UserAPI.getScores(actualUser.username)
+        .then((data) => {
+          console.log(data);
+          if (data) {
+            if (data.length > 0){
+              setAverageScore(findAverageScore(data));
+            } else {
+              setAverageScore(0.0);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('An error occured', error)
+          Toast.show({
+            type: 'error',
+            text1: 'Erreur',
+            text2: 'An error occured while fetching user infos'
+          })
+        })
   }, [])
 
   return (
+    isLoading ? <LoadingScreen message={'signing out...'} /> :
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>My profile</Text>
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>My profile </Text>
+          <Text style={styles.score}>{averageScore}</Text>
+          <Icon style={styles.star} name="star" size={25} color="#FFD700" />
+        </View>
+        <Text style={styles.subtitle}>You will be logged out after saving.</Text>
       </View>
 
       {/* Username Field */}
@@ -144,10 +214,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  star: {
+    marginLeft: 0,
+  },
+  score: {
+    color: '#FFD700',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    marginRight: 2
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   title: {
     color: '#FFF',
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  subtitle: {
+    color: '#FFF',
+    fontSize: 16,
+    marginBottom: 20,
   },
   inputContainer: {
     marginBottom: 20,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import { UserAPI } from '@/src/utils/api';
 import useLocation from '@/src/hooks/useLocation';
 import { useAuth } from '@/src/hooks/useAuth';
 import Toast from 'react-native-toast-message';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const MainView = ({ navigation }) => {
   const [search, setSearch] = useState('');
@@ -26,34 +28,37 @@ const MainView = ({ navigation }) => {
     distanceInterval: 5,  // Update every 5 meters
   });
   const { logout, actualUser } = useAuth();
-
-  useEffect(() => {
-    if (location.latitude === null || location.longitude === null) {
-      return;
-    }
-
-    const input = {
-      username: actualUser.username,
-      latitude: `${location.latitude}`,
-      longitude: `${location.longitude}`
-    }
-
-    UserAPI.updateLocation(input)
-    .then((data) => {
-      UserAPI.getNearbyUsers(input.latitude, input.longitude, setIsFindingUser).then(
-        (data) =>{
-          const validData = data.filter((fetcheduser) => fetcheduser.username != actualUser.username)
-          setUsers(validData);
-        }
-      ).catch((error) => {
-        console.error('Error getting users:', error);
+  
+  useFocusEffect(
+    useCallback(() => {
+      if (location.latitude === null || location.longitude === null) {
+        return;
+      }
+  
+      const input = {
+        username: actualUser.username,
+        latitude: `${location.latitude}`,
+        longitude: `${location.longitude}`
+      }
+  
+      UserAPI.updateLocation(input)
+      .then((data) => {
+        UserAPI.getNearbyUsers(input.latitude, input.longitude, setIsFindingUser).then(
+          (data) =>{
+            const validData = data.filter((fetcheduser) => fetcheduser.username != actualUser.username)
+            setUsers(validData);
+          }
+        ).catch((error) => {
+          console.error('Error getting users:', error);
+        });
+      })
+      .catch((error) => {
+        console.error('Error updating user location', error)
       });
-    })
-    .catch((error) => {
-      console.error('Error updating user location', error)
-    });
-
-  }, [location])
+  
+    }, [location])
+  )
+  
 
   const userCard = ({ item }) => (
     <TouchableOpacity style={styles.userCard} 

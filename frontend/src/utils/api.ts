@@ -63,10 +63,7 @@ export const ConversationAPI = {
         return result;
     },
 
-    updateConversation: async function (conversation_id: string, setLoading = null, cancel = false) {
-        const data = {
-            conversation_id: conversation_id
-        }
+    updateConversation: async function (conversation_id: string, data, setLoading = null, cancel = false) {
         const result = await putData(`/update_conversation/${conversation_id}`, data, setLoading);
         return result;
     },

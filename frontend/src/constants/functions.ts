@@ -1,12 +1,13 @@
 import Toast from "react-native-toast-message";
+import { Score } from "../models/scores";
 
-export const validateEmail = (email) => {
+export const validateEmail = (email: string) => {
     if (email.trim() === ""){
         return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-  };
+};
   
 export const validateInputs = (username: string, email: string, password: string) => {
     let invalids = 0
@@ -41,4 +42,20 @@ export const validateInputs = (username: string, email: string, password: string
     console.log(invalids)
 
     return invalids === 0;
+}
+
+export const calculateAverage = (numbers: number[]): number => {
+  if (numbers.length === 0) {
+    throw new Error("Cannot calculate the average of an empty list");
   }
+  const sum = numbers.reduce((acc, num) => acc + num, 0);
+  return sum / numbers.length;
+}
+
+export const findAverageScore = (scoresList: Score[]): number => {
+  const scores = scoresList.map((score) => score.score);
+  if (scores.length == 1){
+    return scores[0] / 1
+  }
+  return calculateAverage(scores);
+}

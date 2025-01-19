@@ -6,6 +6,7 @@ import { UserAPI, ConversationAPI } from '@/src/utils/api';
 import LoadingScreen from '../utils/loadingScreen';
 import { Score } from '@/src/models/scores';
 import { useAuth } from '@/src/hooks/useAuth';
+import { findAverageScore } from '@/src/constants/functions';
 
 const RateUserScreen = ({ route }) => {
   const [rating, setScore] = useState(0);
@@ -15,22 +16,6 @@ const RateUserScreen = ({ route }) => {
   const [isAddingScoreLoading, setIsAddingScoreLoading] = useState(false);
   const { navigation, infos } = route.params
   const { actualUser } = useAuth();
-
-  const calculateAverage = (numbers: number[]): number => {
-    if (numbers.length === 0) {
-      throw new Error("Cannot calculate the average of an empty list");
-    }
-    const sum = numbers.reduce((acc, num) => acc + num, 0);
-    return sum / numbers.length;
-  }
-
-  const findAverageScore = (scoresList: Score[]): number => {
-    const scores = scoresList.map((score) => score.score);
-    if (scores.length == 1){
-      return scores[0] / 1
-    }
-    return calculateAverage(scores);
-  }
 
   const getRaterScoring = (scoresList: Score[]): number => {
     const raterScore = scoresList.filter((score) => score.rated_by == actualUser.username);
@@ -208,7 +193,7 @@ const RateUserScreen = ({ route }) => {
           disabled={isSendDisabled}
           >
           {/* <Icon name='send' size={20}></Icon> */}
-          { isAddingScoreLoading ? <LoadingScreen loaderSize='small'/> : <Text style={styles.messageButtonText}>Send rating</Text>}
+          { isAddingScoreLoading ? <LoadingScreen styles={loadingStyles} loaderSize='small'/> : <Text style={styles.messageButtonText}>Send rating</Text>}
         </TouchableOpacity>
       </View>
 
@@ -223,6 +208,19 @@ const RateUserScreen = ({ route }) => {
 };
 
 export default RateUserScreen;
+
+const loadingStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#31684d',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  loader: {
+    marginTop: 0,
+  },
+})
 
 const styles = StyleSheet.create({
   container: {

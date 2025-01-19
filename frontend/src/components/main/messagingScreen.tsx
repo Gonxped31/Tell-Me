@@ -18,10 +18,11 @@ import {
 } from 'firebase/firestore';
 
 import { GiftedChat, Bubble, InputToolbar, Send } from 'react-native-gifted-chat';
+import { ConversationAPI } from '@/src/utils/api';
 
 const MessagingScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
-  const { receiverUsername, conv_id, isAnonymous } = route.params
+  const { receiverUsername, conv_id, isAnonymous, isRecipient } = route.params
   const { actualUser } = useAuth();
 
   useLayoutEffect(() => {
@@ -73,6 +74,7 @@ const MessagingScreen = ({ route }) => {
       },
     })
       .then(() => {
+        ConversationAPI.updateConversation(conv_id, isRecipient ? { initiator_opened: false, recipient_opened: true } : { recipient_opened: false, initiator_opened: true });
         console.log("Message successfully sent!");
       })
       .catch((error) => {

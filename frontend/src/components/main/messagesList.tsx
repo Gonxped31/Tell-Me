@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NotFound from '../utils/notFound';
 import { ConversationAPI } from '@/src/utils/api';
 import { useAuth } from '@/src/hooks/useAuth';
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { database } from "../../../config/firebase"; // Your Firebase configuration
+import { useFocusEffect } from '@react-navigation/native';
 
 const Conversations = ({ navigation }) => {
   const [search, setSearch] = useState('');
@@ -18,19 +21,40 @@ const Conversations = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const { actualUser } = useAuth();
 
-  useEffect(() => {
-    ConversationAPI.getConversations(actualUser.username, setLoading)
-    .then((data) => {
-      setConversations(data);
-    })
-    .catch((error) => {
-      console.error('An error occured', error);
-    })
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      ConversationAPI.getConversations(actualUser.username, setLoading)
+      .then((data) => {
+        setConversations(data);
+      })
+      .catch((error) => {
+        console.error('An error occured', error);
+      })
+    }, [])
+  );
+
+  const deleteFirebaseCollection = async (collectionPath) => {
+    try {
+      const collectionRef = collection(database, collectionPath);
+      const snapshot = await getDocs(collectionRef);
+  
+      // Loop through all documents and delete them
+      const deletePromises = snapshot.docs.map((docSnapshot) =>
+        deleteDoc(doc(database, collectionPath, docSnapshot.id))
+      );
+  
+      // Wait for all deletions to complete
+      await Promise.all(deletePromises);
+      console.log("Collection deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting collection:", error);
+    }
+  }
 
   const deleteConversation = (id) => {
     ConversationAPI.deleteConversation(id)
     .then((data) => {
+      deleteFirebaseCollection(`/${id}`);
       setConversations((prevConversations) =>
         prevConversations.filter((conversation) => conversation.conv_id !== id)
       );
@@ -40,23 +64,33 @@ const Conversations = ({ navigation }) => {
     })
   };
 
+  const updateConvesationStatus = async (id) => {
+    const data = { recipient_opened: true };
+    ConversationAPI.updateConversation(id, data)
+    .catch((error) => {
+      console.error('An error occured', error);
+    })
+  }
+
   const renderConversation = ({ item }) => (
-    <TouchableOpacity style={styles.conversation}
-      onPress={() => navigation.navigate("messaging", {
-        navigation: navigation,
-        receiverUsername: item.recipient_username == actualUser.username ? item.initiator_username : item.recipient_username,
-        conv_id: item.conv_id,
-        isAnonymous: item.is_anonymous
-      })}
+    <TouchableOpacity style={ item.recipient_username === actualUser.username ? item.recipient_opened ? styles.conversation : styles.conversationNotOpened : styles.conversation}
+      onPress={() => {
+        updateConvesationStatus(item.conv_id);
+        navigation.navigate("messaging", {
+          navigation: navigation,
+          receiverUsername: item.recipient_username == actualUser.username ? item.initiator_username : item.recipient_username,
+          conv_id: item.conv_id,
+          isAnonymous: item.is_anonymous,
+          isRecipient: item.recipient_username === actualUser.username
+        });
+      }}
     >
       <View style={styles.conversationInfo}>
         <Icon name="chatbubble-outline" size={25} color="#FFF" style={styles.chatIcon} />
         <View>
-          {item.is_anonymous ? <Text style={styles.userName}>Anonymous</Text> : 
           <Text style={styles.userName}>{
             item.recipient_username == actualUser.username ? item.initiator_username : item.recipient_username}
-          </Text>}
-
+          </Text>
           {/* <Text style={styles.lastMessage}>{item.created_at}</Text> */}
         </View>
       </View>
@@ -153,6 +187,17 @@ const styles = StyleSheet.create({
   conversationInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  conversationNotOpened: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#222',
+    borderColor: '#FF007F',
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
   },
   chatIcon: {
     marginRight: 15,
