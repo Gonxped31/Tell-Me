@@ -14,7 +14,7 @@ class PositionSchema(BaseModel):
 class LocationSchema(BaseModel):
     model_config = ConfigDict(extra='allow')
     username: str = Field(...)
-    location: Geography = Field(...)
+    location: tuple = Field(...)
     updated_at: datetime = Field(...)
 
     # class Config:
