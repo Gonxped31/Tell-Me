@@ -1,10 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_ENDPOINT } from '@/src/constants/variables';
+import { API_BASE_URL } from '@/src/constants/variables';
 
 // Create an axios instance with the base URL
 const authenticatedRequest = axios.create({
-  baseURL: API_ENDPOINT + "/api",
+  baseURL: API_BASE_URL + "/api",
 });
 
 // Add a request interceptor to include the Authorization header

@@ -45,7 +45,7 @@ const MainView = ({ navigation }) => {
       .then((data) => {
         UserAPI.getNearbyUsers(input.latitude, input.longitude, setIsFindingUser).then(
           (data) =>{
-            const validData = data.filter((fetcheduser) => fetcheduser.username != actualUser.username)
+            const validData = data.filter((fetcheduser: { username: any; }) => fetcheduser.username != actualUser.username)
             setUsers(validData);
           }
         ).catch((error) => {
@@ -79,22 +79,24 @@ const MainView = ({ navigation }) => {
 
   const handleLogOut = () => {
     setIsLoading(true);
-    logout().then((data) => {
-      UserAPI.deleteUserLocation(actualUser.username)
-      .catch((error) => {
-        console.error("Error deleteing user's location", error)
-      });
-      Toast.show({
-        type: 'info',
-        text1: 'Logged out!'
-      })
-    }).catch((error) => {
-      console.error('Error during log out', error)
-      Toast.show({
-        type: 'error',
-        text1: 'Error during log out.'
+    UserAPI.deleteUserLocation(actualUser.username)
+    .then(() => {
+      logout().then(() => {
+        Toast.show({
+          type: 'info',
+          text1: 'Logged out!'
+        })
+      }).catch((error: any) => {
+        console.error('Error during log out', error)
+        Toast.show({
+          type: 'error',
+          text1: 'Error during log out.'
+        })
       })
     })
+    .catch((error) => {
+      console.error("Error deleteing user's location", error)
+    });
   };
 
   return (
