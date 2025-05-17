@@ -51,7 +51,7 @@ async def get_nearby_users(
 
 @location_router.delete(
     "/delete_user_location/{username}",
-    response_model=LocationSchema,
+    response_model=Dict,
     description="Delete a user's location",
     summary="Delete a user's location"
 )

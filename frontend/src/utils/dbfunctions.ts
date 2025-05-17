@@ -1,15 +1,7 @@
 import { API_BASE_URL } from "@/src/constants/variables";
 import authenticatedRequest from "@/src/helpers/authenticatedRequest";
 
-const testing = false;
-
 const buildUrl = (url) => {
-    // const apiUrl = testing ? 
-    // `http://10.0.2.2:8000${url}` :
-    // // process.env.VITE_API_ENDPOINT + "/api" + url;
-    // 'http://10.0.2.2:8000' + "/api" + url;
-    // console.log(apiUrl);
-    // return apiUrl
     return API_BASE_URL + '/api' + url
 }
 

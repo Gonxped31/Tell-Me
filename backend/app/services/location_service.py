@@ -56,7 +56,7 @@ class LocationService:
         return result
     
     @staticmethod
-    async def delete_user_location(username: str):
+    async def delete_user_location(username: str) -> Location:
         location = await LocationService.get_location_by_username(username)
         if not location:
             return None
