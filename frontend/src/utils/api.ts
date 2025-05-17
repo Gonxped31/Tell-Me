@@ -23,6 +23,11 @@ export const UserAPI = {
         return result.map((user) => new UserShort(user));
     },
 
+    deleteUserLocation: async function (username: string, setLoading = null, cancel = null) {
+        const result = await deleteData(`/delete_user_location/${username}`, setLoading);
+        return result;
+    },
+
     /** Score */
     getScores: async function (username: string, setLoading = null, cancel = null) {
         const result = await fetchData(`/get_scores/${username}`, setLoading);

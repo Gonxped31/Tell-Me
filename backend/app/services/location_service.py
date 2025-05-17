@@ -5,6 +5,10 @@ from typing import List
 
 class LocationService:
     @staticmethod
+    async def get_location_by_username(username: str) -> Location:
+        return db.session.query(Location).filter(Location.username == username).first()
+
+    @staticmethod
     async def update_user_location(username: str, latitude: float, longitude: float) -> Location:
 
         user_location = db.session.query(Location).filter(Location.username == username).first()
@@ -50,3 +54,12 @@ class LocationService:
             })
 
         return result
+    
+    @staticmethod
+    async def delete_user_location(username: str):
+        location = await LocationService.get_location_by_username(username)
+        if not location:
+            return None
+        db.session.delete(location)
+        db.session.commit()
+        return location

@@ -48,3 +48,18 @@ async def get_nearby_users(
         longitude=float(longitude)
     )    
     return nearby_users
+
+@location_router.delete(
+    "/delete_user_location/{username}",
+    response_model=LocationSchema,
+    description="Delete a user's location",
+    summary="Delete a user's location"
+)
+async def delete_user_location(
+    username: str = Path(...),
+    _ = Depends(verify_token)
+):
+    location = await LocationService.delete_user_location(username)
+    if not location:
+        raise HTTPException(status_code=404, detail=f"Location for this username: '{username}' not found")
+    return location

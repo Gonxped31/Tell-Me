@@ -59,7 +59,6 @@ const MainView = ({ navigation }) => {
     }, [location, actualUser])
   )
   
-
   const userCard = ({ item }) => (
     <TouchableOpacity style={styles.userCard} 
     onPress={() => navigation.navigate("rateUser", {
@@ -78,9 +77,13 @@ const MainView = ({ navigation }) => {
     actualUser.username.toLowerCase().includes(search.toLowerCase())
   ) : [];
 
-  const handleSignOut = () => {
+  const handleLogOut = () => {
     setIsLoading(true);
     logout().then((data) => {
+      UserAPI.deleteUserLocation(actualUser.username)
+      .catch((error) => {
+        console.error("Error deleteing user's location", error)
+      });
       Toast.show({
         type: 'info',
         text1: 'Logged out!'
@@ -98,7 +101,7 @@ const MainView = ({ navigation }) => {
     !isLoading ? <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>TELL ME</Text>
-        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+        <TouchableOpacity style={styles.signOutButton} onPress={handleLogOut}>
           <Icon name="log-out-outline" size={24} color="#FFF" />
         </TouchableOpacity>
       </View>
