@@ -45,7 +45,6 @@ const Conversations = ({ navigation }) => {
   
       // Wait for all deletions to complete
       await Promise.all(deletePromises);
-      console.log("Collection deleted successfully!");
     } catch (error) {
       console.error("Error deleting collection:", error);
     }

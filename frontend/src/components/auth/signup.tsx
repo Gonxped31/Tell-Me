@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { authAPI } from '@/src/utils/api';
+import Toast from 'react-native-toast-message';
+import { validateInputs } from '@/src/constants/functions';
 
 const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -9,19 +11,25 @@ const SignUp = ({ navigation }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const validateSignUp = () => {
-    const data = {
-      username: username,
-      email: email,
-      password: password
-    }
-
-    authAPI.signup(data).then(
-      (data) => {
-        navigation.navigate("login")
+    if (validateInputs(username, email, password)) {
+      const data = {
+        username: username,
+        email: email,
+        password: password
       }
-    ).catch((error) => {
-        console.error('Error creating account:', error);
-    });
+  
+      authAPI.signup(data).then(
+        (data) => {
+          navigation.navigate("login")
+        }
+      ).catch((error) => {
+          Toast.show({
+            type:'error',
+            text1: 'An error occured while creating you account.'
+          })
+          console.error('Error creating account:', error);
+      });
+    }
   }
 
   return (

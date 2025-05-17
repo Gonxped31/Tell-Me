@@ -12,7 +12,7 @@ export const validateEmail = (email: string) => {
 export const validateInputs = (username: string, email: string, password: string) => {
     let invalids = 0
 
-    if (password.trim() !== "" && password.length < 8) {
+    if (password.trim() === "" || (password.trim() !== "" && password.length < 8)) {
       Toast.show({
         type: 'error',
         text1: 'Password must contains a least 8 characters'
@@ -35,12 +35,6 @@ export const validateInputs = (username: string, email: string, password: string
       });
       invalids++;
     }
-
-    console.log('username', username)
-    console.log('email', email)
-    console.log('password', password)
-    console.log(invalids)
-
     return invalids === 0;
 }
 

@@ -1,4 +1,4 @@
-import { API_ENDPOINT } from "@/src/constants/variables";
+import { API_BASE_URL } from "@/src/constants/variables";
 import authenticatedRequest from "@/src/helpers/authenticatedRequest";
 
 const testing = false;
@@ -10,7 +10,7 @@ const buildUrl = (url) => {
     // 'http://10.0.2.2:8000' + "/api" + url;
     // console.log(apiUrl);
     // return apiUrl
-    return API_ENDPOINT + '/api' + url
+    return API_BASE_URL + '/api' + url
 }
 
 function encodeFormData(data) {

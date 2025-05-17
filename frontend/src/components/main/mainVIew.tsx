@@ -31,7 +31,7 @@ const MainView = ({ navigation }) => {
   
   useFocusEffect(
     useCallback(() => {
-      if (location.latitude === null || location.longitude === null) {
+      if (location.latitude === null || location.longitude === null || actualUser == null) {
         return;
       }
   
@@ -56,7 +56,7 @@ const MainView = ({ navigation }) => {
         console.error('Error updating user location', error)
       });
   
-    }, [location])
+    }, [location, actualUser])
   )
   
 

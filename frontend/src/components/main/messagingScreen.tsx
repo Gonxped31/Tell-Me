@@ -26,7 +26,6 @@ const MessagingScreen = ({ route }) => {
   const { actualUser } = useAuth();
 
   useLayoutEffect(() => {
-    console.log(actualUser)
     const collectionRef = collection(database, conv_id);
     const q = query(collectionRef, orderBy('createdAt', 'desc'));
 
@@ -34,7 +33,6 @@ const MessagingScreen = ({ route }) => {
       setMessages(
         snapshot.docs.map((doc) => {
           const data = doc.data();
-          console.log(data);
           return {
             _id: data._id,
             createdAt: data.createdAt.toDate(),
@@ -75,7 +73,6 @@ const MessagingScreen = ({ route }) => {
     })
       .then(() => {
         ConversationAPI.updateConversation(conv_id, isRecipient ? { initiator_opened: false, recipient_opened: true } : { recipient_opened: false, initiator_opened: true });
-        console.log("Message successfully sent!");
       })
       .catch((error) => {
         console.error("An error occurred while sending message:", error);
