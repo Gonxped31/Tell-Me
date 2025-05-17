@@ -4,6 +4,7 @@ from app.api.handlers.ratings import ratings_router
 from app.api.handlers.conversation import conversation_router
 from app.api.auth.jwt import auth_router
 from app.api.handlers.location import location_router
+from app.api.handlers.health_check import health_router
 
 router = APIRouter()
 
