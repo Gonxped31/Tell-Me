@@ -80,8 +80,8 @@ const MainView = ({ navigation }) => {
   const handleLogOut = () => {
     setIsLoading(true);
     UserAPI.deleteUserLocation(actualUser.username)
-    .then(() => {
-      logout().then(() => {
+    .then((data) => {
+      logout().then((data) => {
         Toast.show({
           type: 'info',
           text1: 'Logged out!'
