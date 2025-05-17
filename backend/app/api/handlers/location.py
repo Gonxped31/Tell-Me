@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Path, status, HTTPException, Depends
-from app.schemas.geography_schema import LocationSchema, PositionSchema
+from app.schemas.geography_schema import PositionSchema
 from app.services.location_service import LocationService
 from app.api.deps.user_deps import verify_token
 from typing import List, Dict

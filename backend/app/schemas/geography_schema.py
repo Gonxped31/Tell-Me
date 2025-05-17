@@ -11,11 +11,11 @@ class PositionSchema(BaseModel):
     # class Config:
     #     extra = "allow"
 
-class LocationSchema(BaseModel):
-    model_config = ConfigDict(extra='allow')
-    username: str = Field(...)
-    location: tuple = Field(...)
-    updated_at: datetime = Field(...)
+# class LocationSchema(BaseModel):
+#     model_config = ConfigDict(extra='allow')
+#     username: str = Field(...)
+#     location: tuple = Field(...)
+#     updated_at: datetime = Field(...)
 
-    # class Config:
-    #     extra = "allow"
+#     # class Config:
+#     #     extra = "allow"
