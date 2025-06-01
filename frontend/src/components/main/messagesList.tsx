@@ -126,7 +126,7 @@ const Conversations = ({ navigation }) => {
       {filterdConversations.length > 0 ? <FlatList
         data={filterdConversations}
         renderItem={renderConversation}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.conv_id}
         contentContainerStyle={styles.conversationsList}/>
         : <NotFound message={"No messages found..."} />
         }

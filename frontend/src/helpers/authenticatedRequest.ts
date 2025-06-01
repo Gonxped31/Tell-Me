@@ -42,7 +42,7 @@ authenticatedRequest.interceptors.response.use(
 
         // Request a new access token using the refresh token
         const response = await axios.post(
-          API_ENDPOINT + '/auth/refresh',
+          API_BASE_URL + '/auth/refresh',
           { refreshToken: refreshToken }
         );
 
