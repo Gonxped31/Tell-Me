@@ -82,11 +82,16 @@ const Login = ({ navigation }) => {
         {/* Forgot Password */}
         <TouchableOpacity>
           <Text style={styles.forgotPassword}
-            onPress={() => navigation.navigate("emailForRecovery", {
-              navigation: navigation,
-              email: actualUserEmail
+            // onPress={() => navigation.navigate("emailForRecovery", {
+            //   navigation: navigation,
+            //   email: actualUserEmail
+            // })}
+            onPress={() => Toast.show({
+              type: 'info',
+              text1: 'Feature not available yet',
+              text2: 'Please check back later.'
             })}
-          >Forgot password?</Text>
+          >Forgot password? (not available yet)</Text>
         </TouchableOpacity>
   
         {/* Confirm and Back Buttons */}

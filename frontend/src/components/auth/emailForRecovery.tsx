@@ -18,32 +18,33 @@ const EmailForRecovery = ({ navigation }) => {
       return;
     }
 
-    try {
-      setIsLoading(true); // Start loading
-      const response = await UserAPI.sendVerificationCode(email)
-      setIsLoading(false); // Stop loading after API call
+    setIsLoading(true);
 
+    UserAPI.sendVerificationCode(email)
+    .then((response) => {
+      setIsLoading(false);
       if (response) {
         navigation.navigate("passRecovery", {
-            navigation: navigation,
-            email: email
+          navigation: navigation,
+          email: email
         });
       } else {
         Toast.show({
           type: "error",
           text1: "Error",
-          text2: "Invalid email. Please try again.",
+          text2: "Failed to send verification code. Please try again.",
         });
       }
-    } catch (error) {
-      console.error("Error sending code:", error);
-      setIsLoading(false); // Ensure loading stops even on error
+    })
+    .catch((error) => {
+      setIsLoading(false);
+      console.error("Error sending verification code:", error);
       Toast.show({
         type: "error",
-        text1: "Error",
-        text2: "Something went wrong. Please try again.",
+        text1: "Invalid email. Please try again.",
       });
-    }
+    });
+
   };
 
   return isLoading ? (
