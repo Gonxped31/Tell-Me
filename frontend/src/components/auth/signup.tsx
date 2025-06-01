@@ -3,15 +3,19 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { authAPI } from '@/src/utils/api';
 import Toast from 'react-native-toast-message';
 import { validateInputs } from '@/src/constants/functions';
+import LoadingScreen from '../utils/loadingScreen';
 
 const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   const validateSignUp = () => {
     if (validateInputs(username, email, password)) {
+      setIsSigningUp(true);
+
       const data = {
         username: username,
         email: email,
@@ -33,7 +37,7 @@ const SignUp = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    !isSigningUp ? <View style={styles.container}>
       <Text style={styles.title}>Sign up</Text>
 
       {/* Username Input */}
@@ -87,7 +91,7 @@ const SignUp = ({ navigation }) => {
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </View> : <LoadingScreen message={"Creating account..."} />
   );
 }
 
