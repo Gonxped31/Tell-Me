@@ -2,9 +2,9 @@ import 'dotenv/config';
 
 export default {
     "expo": {
-      "name": "frontend_app",
-      "slug": "frontend_app",
-      "version": "1.0.0",
+      "name": "Tell Me",
+      "slug": "tell-me",
+      "version": "0.1.0",
       "orientation": "portrait",
       "icon": "./src/assets/images/icon.png",
       "scheme": "myapp",
@@ -49,7 +49,7 @@ export default {
         appId: process.env.APP_ID,
         databaseURL: process.env.DATABASE_URL,
         eas: {
-          "projectId": "f312c123-4d5b-4819-a97c-25c97e1dd5ea"
+          "projectId": "b2599488-da84-4711-9b1c-73c5fba73dcf"
         }
       }
     }

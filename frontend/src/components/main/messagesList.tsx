@@ -76,7 +76,6 @@ const Conversations = ({ navigation }) => {
       onPress={() => {
         updateConvesationStatus(item.conv_id);
         navigation.navigate("messaging", {
-          navigation: navigation,
           receiverUsername: item.recipient_username == actualUser.username ? item.initiator_username : item.recipient_username,
           conv_id: item.conv_id,
           isAnonymous: item.is_anonymous,
