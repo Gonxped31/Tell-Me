@@ -10,8 +10,8 @@ The primary objective of this project is to create a platform that enables indiv
 2. **Profile Viewing and Social Scoring**  
    Users can explore the profiles of nearby individuals and assign them a "social score" based on their impression in real life (e.g., appearance or demeanor). This score reflects a lightweight, subjective rating system for social interactions.
 
-3. **Anonymous Messaging**  
-   Users can send private messages to other users they’ve rated or discovered. Messages are initially sent anonymously, but the sender has the option to reveal their identity later in the conversation.
+3. **Messaging**  
+   Users can send messages to other users they’ve rated or discovered.
 
 4. **Real Connections**  
    The app encourages genuine interactions by allowing users to exchange real contact information if the conversation is meaningful.
@@ -21,8 +21,4 @@ The primary objective of this project is to create a platform that enables indiv
 - Enable users to offer feedback, compliments, or comments to others in a way that might not be feasible in person.  
 - Foster opportunities for new friendships or relationships in a digital-first, socially dynamic manner.  
 
-## Vision
-This app is designed to be a quick and intuitive tool for casual interactions, fostering meaningful connections while providing users with the option to share feedback in an indirect but impactful way. By bridging the gap between virtual communication and real-world encounters, it opens up new opportunities for social engagement.
-
-## Roadmap
-The roadmap (readme) for the frontend and the backend can be found the appropriate folder.
+## Dowload the apk file [here](https://expo.dev/accounts/gonxped31/projects/tell-me/builds/308bb6b6-67d0-413b-b72b-cf5017d48768).
