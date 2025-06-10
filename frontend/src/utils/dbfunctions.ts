@@ -51,7 +51,7 @@ export async function fetchData(url, setLoading = null) {
         const response = await authenticatedRequest.get(url);
         return response.data;
     } catch (error) {
-        console.error('Error fetching data:', error);
+        throw error;
     } finally {
         if (setLoading) {
             setLoading(false);

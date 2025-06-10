@@ -19,7 +19,7 @@ import { findAverageScore } from '@/src/constants/functions';
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('********');
   const [isLoading, setLoading] = useState(false);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const { actualUser, logout } = useAuth();
@@ -28,8 +28,6 @@ const Profile = ({ navigation }) => {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible);
   };
-
-
 
   const updateUserInFirestore = async (oldEmail, newEmail, newName, conversations) => {
     try {

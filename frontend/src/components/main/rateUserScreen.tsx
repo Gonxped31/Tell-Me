@@ -14,6 +14,7 @@ const RateUserScreen = ({ route }) => {
   const [isSendDisabled, setIsSendDisabled] = useState(true)
   const [isFetchingInfosLoading, setIsFetchingInfosLoading] = useState(false);
   const [isAddingScoreLoading, setIsAddingScoreLoading] = useState(false);
+  const [isLoadingConversationLoading, setIsLoadingConversationLoading] = useState(false);
   const { navigation, infos } = route.params
   const { actualUser } = useAuth();
 
@@ -98,7 +99,6 @@ const RateUserScreen = ({ route }) => {
   useEffect(() => {
     UserAPI.getScores(infos.username, setIsFetchingInfosLoading)
     .then((data) => {
-      console.log(data);
       if (data) {
         if (data.length > 0){
           setAverageScore(findAverageScore(data));
@@ -120,35 +120,58 @@ const RateUserScreen = ({ route }) => {
   }, [])
 
   const loadConversation = () => {
+    setIsLoadingConversationLoading(true);
     ConversationAPI.getConversation(actualUser.username, infos.username)
-    .then((data) => {
+    .then((res) => {
+      setIsLoadingConversationLoading(false);
       navigation.navigate("messaging", {
         navigation: navigation,
         receiverUsername: infos.username,
-        conv_id: data.conv_id,
-        isAnonymous: data.is_anonymous
+        conv_id: res.conv_id,
+        isAnonymous: res.is_anonymous
       });
     })
     .catch((error) => {
-      const data = {
-        initiator_username: actualUser.username,
-        recipient_username: infos.username
-      }
-      ConversationAPI.createNewConversation(data)
-      .then((data) => {
-        navigation.navigate("messaging", {
-          navigation: navigation,
-          receiverUsername: infos.username,
-          conv_id: data.conv_id,
-          isAnonymous: data.is_anonymous
+      console.log("Response", error.response.status);
+      // console.error('An error occured while loading conv', error);
+      if (error.response && error.response.status === 404) {
+        const data = {
+          initiator_username: actualUser.username,
+          recipient_username: infos.username
+        }
+        ConversationAPI.createNewConversation(data)
+        .then((data) => {
+          setIsLoadingConversationLoading(false);
+          navigation.navigate("messaging", {
+            navigation: navigation,
+            receiverUsername: infos.username,
+            conv_id: data.conv_id,
+            isAnonymous: data.is_anonymous
+          });
+        })
+        .catch((error) => {
+          setIsLoadingConversationLoading(false);
+          console.error('An error occured while creating conv', error);
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'An error occured while creating the conversation.'
+          });
         });
-      });
-      // console.error('An error occured', error);
+      } else {
+        setIsLoadingConversationLoading(false);
+        console.log("Error", error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'An error occured while loading the conversation.'
+        });
+      }
     });
   }
 
   return (
-    isFetchingInfosLoading ? <LoadingScreen message={"Fetching user info..."}/> : 
+    (isFetchingInfosLoading || isLoadingConversationLoading) ? <LoadingScreen message={"Loading..."}/> : 
     <View style={styles.container}>
       {/* Back Button */}
       {/* <TouchableOpacity onPress={() => alert("back")} style={styles.backButton}>
